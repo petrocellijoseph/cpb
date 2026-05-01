@@ -1,0 +1,2563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAWANGAN PROJEK BANGUNAN — Interactive Dashboard | JKR Sabah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root, [data-theme="dark"] {
+    --bg-base: #0d0e12;
+    --bg-surface: #161821;
+    --bg-elev: #1d1f2a;
+    --bg-glass: rgba(29, 31, 42, 0.6);
+    --border: rgba(201, 169, 110, 0.12);
+    --border-strong: rgba(201, 169, 110, 0.25);
+    --text-primary: #f5f1e8;
+    --text-secondary: #a8a39a;
+    --text-muted: #6b6760;
+    --accent-gold: #c9a96e;
+    --accent-gold-bright: #e0c084;
+    --accent-gold-deep: #8a7449;
+    --status-dj: #6db58a;
+    --status-ij: #5b9bd5;
+    --status-lj: #d4a25a;
+    --status-sakit: #d96860;
+    --modal-backdrop: rgba(13, 14, 18, 0.85);
+    --status-dj-soft: rgba(109, 181, 138, 0.08);
+    --status-ij-soft: rgba(91, 155, 213, 0.08);
+    --status-lj-soft: rgba(212, 162, 90, 0.08);
+    --status-sakit-soft: rgba(217, 104, 96, 0.08);
+    --status-dj-border: rgba(109, 181, 138, 0.3);
+    --status-ij-border: rgba(91, 155, 213, 0.3);
+    --status-lj-border: rgba(212, 162, 90, 0.3);
+    --status-sakit-border: rgba(217, 104, 96, 0.3);
+    --hover-tint: var(--hover-tint);
+    --row-hover: var(--row-hover);
+    --bg-hairline: var(--bg-hairline);
+    --bg-track: var(--bg-track);
+    --chart-grid: rgba(201, 169, 110, 0.06);
+    --chart-text: #a8a39a;
+    --chart-bar-soft: rgba(91, 155, 213, 0.7);
+    --chart-bar-gold: rgba(201, 169, 110, 0.7);
+    --chart-tooltip-bg: rgba(13, 14, 18, 0.95);
+    --chart-tooltip-border: rgba(201, 169, 110, 0.25);
+    --noise-opacity: 0.5;
+    --atm-1: rgba(201, 169, 110, 0.08);
+    --atm-2: rgba(91, 155, 213, 0.05);
+    --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a8a39a' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    --search-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23c9a96e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    --noise-color: 0.79 0 0 0 0  0 0.66 0 0 0  0 0.43 0 0 0  0 0 0 0.04 0;
+    --serif: 'Fraunces', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  [data-theme="light"] {
+    --bg-base: #f5f0e6;
+    --bg-surface: #ffffff;
+    --bg-elev: #faf6ec;
+    --bg-glass: rgba(255, 255, 255, 0.7);
+    --border: rgba(138, 116, 73, 0.18);
+    --border-strong: rgba(138, 116, 73, 0.38);
+    --text-primary: #1a1815;
+    --text-secondary: #5a554c;
+    --text-muted: #8b8478;
+    --accent-gold: #8a7449;
+    --accent-gold-bright: #6b5a36;
+    --accent-gold-deep: #a08245;
+    --status-dj: #3d8460;
+    --status-ij: #2e6ea3;
+    --status-lj: #a87436;
+    --status-sakit: #b04339;
+    --modal-backdrop: rgba(45, 38, 24, 0.55);
+    --status-dj-soft: rgba(61, 132, 96, 0.10);
+    --status-ij-soft: rgba(46, 110, 163, 0.10);
+    --status-lj-soft: rgba(168, 116, 54, 0.10);
+    --status-sakit-soft: rgba(176, 67, 57, 0.10);
+    --status-dj-border: rgba(61, 132, 96, 0.4);
+    --status-ij-border: rgba(46, 110, 163, 0.4);
+    --status-lj-border: rgba(168, 116, 54, 0.4);
+    --status-sakit-border: rgba(176, 67, 57, 0.4);
+    --hover-tint: rgba(138, 116, 73, 0.06);
+    --row-hover: rgba(138, 116, 73, 0.05);
+    --bg-hairline: rgba(138, 116, 73, 0.04);
+    --bg-track: rgba(138, 116, 73, 0.12);
+    --chart-grid: rgba(138, 116, 73, 0.10);
+    --chart-text: #5a554c;
+    --chart-bar-soft: rgba(46, 110, 163, 0.75);
+    --chart-bar-gold: rgba(138, 116, 73, 0.75);
+    --chart-tooltip-bg: rgba(255, 255, 255, 0.98);
+    --chart-tooltip-border: rgba(138, 116, 73, 0.4);
+    --noise-opacity: 0.18;
+    --atm-1: rgba(138, 116, 73, 0.10);
+    --atm-2: rgba(46, 110, 163, 0.06);
+    --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%235a554c' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    --search-icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a7449' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+    --noise-color: 0.54 0 0 0 0  0 0.45 0 0 0  0 0.29 0 0 0  0 0 0 0.06 0;
+  }
+
+  html, body {
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  html, body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* Atmospheric background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 8%, var(--atm-1), transparent 45%),
+      radial-gradient(ellipse at 85% 92%, var(--atm-2), transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+    transition: background 0.4s ease;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.79 0 0 0 0 0.66 0 0 0 0 0.43 0 0 0 0.04 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: var(--noise-opacity);
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: overlay;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1480px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 48px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .brand-emblem {
+    width: 56px; height: 56px;
+    border: 1.5px solid var(--accent-gold);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+
+  .brand-emblem::after {
+    content: '';
+    position: absolute; inset: 6px;
+    border: 1px solid var(--accent-gold-deep);
+    border-radius: 50%;
+  }
+
+  .brand-emblem span {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    color: var(--accent-gold-bright);
+    font-size: 22px;
+    z-index: 1;
+  }
+
+  .brand-text .org {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--accent-gold);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .brand-text .name {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .meta-item {
+    text-align: right;
+  }
+  .meta-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .meta-value {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+
+  .title-block {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 48px;
+    align-items: end;
+  }
+
+  .main-title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(40px, 6vw, 78px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+  .main-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent-gold-bright);
+    font-feature-settings: "ss01", "ss02";
+  }
+  .main-title .small {
+    display: block;
+    font-size: 0.4em;
+    font-weight: 400;
+    color: var(--text-secondary);
+    margin-top: 12px;
+    letter-spacing: 0;
+    font-style: italic;
+  }
+
+  .header-summary {
+    text-align: right;
+    max-width: 320px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+    border-left: 1px solid var(--border);
+    padding-left: 24px;
+  }
+
+  /* KPI BAND */
+  .kpi-band {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 56px;
+  }
+  .kpi {
+    background: var(--bg-surface);
+    padding: 26px 22px;
+    position: relative;
+    transition: background 0.3s ease;
+  }
+  .kpi:hover { background: var(--bg-elev); }
+
+  .kpi-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .kpi-value {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+  .kpi-value .unit {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-left: 4px;
+    font-style: italic;
+  }
+  .kpi-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    font-family: var(--mono);
+  }
+  .kpi-accent { color: var(--accent-gold-bright); }
+
+  /* SECTION HEADERS */
+  .section {
+    margin-bottom: 56px;
+  }
+  .section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-style: italic;
+    font-size: 28px;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent-gold);
+    letter-spacing: 0.2em;
+  }
+  .section-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  /* DASHBOARD GRID */
+  .grid-wide {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 24px;
+  }
+  .grid-three {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .grid-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px;
+    transition: border-color 0.3s ease;
+  }
+  .card:hover { border-color: var(--border-strong); }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 20px;
+  }
+  .card-title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 18px;
+    color: var(--text-primary);
+  }
+  .card-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .chart-wrap { position: relative; height: 280px; }
+  .chart-wrap.tall { height: 360px; }
+  .chart-wrap.short { height: 220px; }
+
+  /* STATUS BREAKDOWN VISUAL */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .status-tile {
+    padding: 20px 18px;
+    border-radius: 4px;
+    border-left: 3px solid;
+    background: var(--bg-hairline);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .status-tile:hover { background: var(--hover-tint); transform: translateY(-2px); }
+  .status-tile.dj { border-color: var(--status-dj); }
+  .status-tile.ij { border-color: var(--status-ij); }
+  .status-tile.lj { border-color: var(--status-lj); }
+  .status-tile.sakit { border-color: var(--status-sakit); }
+
+  .status-code {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    margin-bottom: 6px;
+  }
+  .status-tile.dj .status-code { color: var(--status-dj); }
+  .status-tile.ij .status-code { color: var(--status-ij); }
+  .status-tile.lj .status-code { color: var(--status-lj); }
+  .status-tile.sakit .status-code { color: var(--status-sakit); }
+
+  .status-name {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    font-style: italic;
+    font-family: var(--serif);
+  }
+  .status-count {
+    font-family: var(--serif);
+    font-size: 38px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--text-primary);
+  }
+  .status-pct {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  /* DISTRICT MAP / GRID */
+  .district-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .district-cell {
+    background: var(--bg-hairline);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .district-cell:hover {
+    background: var(--row-hover);
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+  }
+  .district-name {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    font-family: var(--mono);
+  }
+  .district-count {
+    font-family: var(--serif);
+    font-size: 24px;
+    font-weight: 400;
+    color: var(--accent-gold-bright);
+    line-height: 1;
+  }
+  .district-value {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* FILTER BAR */
+  .filter-bar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 22px 24px;
+    margin-bottom: 24px;
+  }
+  .filter-row {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .filter-row.secondary {
+    grid-template-columns: repeat(3, 1fr) auto auto;
+    gap: 14px;
+    align-items: end;
+    padding-top: 18px;
+    border-top: 1px dashed var(--border);
+    margin-bottom: 0;
+  }
+  .filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .filter-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .filter-label .ms-tag {
+    font-family: var(--serif);
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--accent-gold);
+    font-size: 11px;
+  }
+  .filter-input {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 11px 14px;
+    border-radius: 3px;
+    font-family: var(--sans);
+    font-size: 13px;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+    appearance: none;
+  }
+  .filter-input:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+    background: var(--row-hover);
+  }
+  .filter-input::placeholder { color: var(--text-muted); font-style: italic; }
+  .filter-input.with-icon {
+    padding-left: 38px;
+    background-image: var(--search-icon);
+    background-repeat: no-repeat;
+    background-position: 14px center;
+    background-size: 13px 13px;
+  }
+  select.filter-input {
+    cursor: pointer;
+    background-image: var(--select-chevron);
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 10px;
+    padding-right: 36px;
+  }
+  select.filter-input.with-icon {
+    background-image: var(--search-icon), var(--select-chevron);
+    background-position: 14px center, right 14px center;
+    background-size: 13px 13px, 10px;
+  }
+  select.filter-input option {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+  }
+
+  .filter-clear {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 11px 18px;
+    border-radius: 3px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    height: 41px;
+    white-space: nowrap;
+  }
+  .filter-clear:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold-bright);
+    background: var(--row-hover);
+  }
+
+  .filter-result {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    height: 41px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-left: 12px;
+    text-align: right;
+  }
+  .filter-result strong {
+    color: var(--accent-gold-bright);
+    font-weight: 500;
+    font-size: 14px;
+    margin-right: 4px;
+  }
+
+  /* Active filter chips */
+  .active-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    min-height: 0;
+  }
+  .active-chips:empty { display: none; }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border-radius: 100px;
+    background: var(--row-hover);
+    border: 1px solid var(--border-strong);
+    font-size: 11px;
+    color: var(--accent-gold-bright);
+    font-family: var(--mono);
+  }
+  .chip .chip-key {
+    color: var(--text-muted);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .chip .chip-x {
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1;
+    margin-left: 2px;
+    transition: color 0.2s;
+  }
+  .chip .chip-x:hover { color: var(--status-sakit); }
+
+  /* PROJECT TABLE */
+  .table-wrap {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .project-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .project-table thead th {
+    text-align: left;
+    padding: 16px 14px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elev);
+    position: sticky;
+    top: 0;
+  }
+  .project-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .project-table tbody tr:hover {
+    background: var(--row-hover);
+  }
+  .project-table tbody td {
+    padding: 16px 14px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+  .project-table tbody td:first-child {
+    color: var(--text-primary);
+    font-weight: 500;
+    max-width: 360px;
+  }
+  .project-title-cell .small {
+    display: block;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .value-cell {
+    font-family: var(--mono);
+    color: var(--accent-gold-bright);
+    font-weight: 500;
+    text-align: right;
+    white-space: nowrap;
+  }
+  .pct-cell {
+    font-family: var(--mono);
+    text-align: right;
+  }
+  .progress-bar-wrap {
+    display: flex; align-items: center; gap: 10px;
+    min-width: 120px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-track);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-gold-deep), var(--accent-gold-bright));
+    transition: width 0.6s ease;
+  }
+  .progress-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-secondary);
+    min-width: 42px;
+    text-align: right;
+  }
+
+  /* STATUS PILLS */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+  .pill-dj { color: var(--status-dj); border-color: var(--status-dj-border); background: var(--status-dj-soft); }
+  .pill-ij { color: var(--status-ij); border-color: var(--status-ij-border); background: var(--status-ij-soft); }
+  .pill-lj { color: var(--status-lj); border-color: var(--status-lj-border); background: var(--status-lj-soft); }
+  .pill-sakit { color: var(--status-sakit); border-color: var(--status-sakit-border); background: var(--status-sakit-soft); }
+  .pill::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: currentColor;
+  }
+
+  .funding-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+  }
+  .funding-tag.fed {
+    background: var(--status-ij-soft); color: var(--status-ij);
+  }
+  .funding-tag.state {
+    background: rgba(138, 116, 73, 0.12); color: var(--accent-gold);
+  }
+
+  /* MODAL */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--modal-backdrop, rgba(13, 14, 18, 0.85));
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 8px;
+    max-width: 1000px;
+    width: 100%;
+    margin: auto;
+    overflow: hidden;
+    animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .modal-header {
+    padding: 28px 32px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, var(--row-hover), transparent);
+    position: relative;
+  }
+  .modal-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: grid; place-items: center;
+    transition: all 0.2s;
+  }
+  .modal-close:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold-bright);
+  }
+  .modal-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent-gold);
+    letter-spacing: 0.18em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .modal-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.3;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+    padding-right: 60px;
+  }
+  .modal-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+    font-size: 12px;
+  }
+  .modal-meta-item {
+    color: var(--text-secondary);
+  }
+  .modal-meta-item strong {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-family: var(--mono);
+  }
+
+  .modal-body {
+    padding: 28px 32px;
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 28px;
+  }
+  .info-cell {
+    background: var(--bg-surface);
+    padding: 16px 18px;
+  }
+  .info-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .info-value {
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+    font-family: var(--mono);
+  }
+  .info-value.gold { color: var(--accent-gold-bright); font-family: var(--mono); }
+
+  .progress-block {
+    margin-bottom: 28px;
+  }
+  .progress-block-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+  }
+  .dual-progress {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .dual-progress-item {
+    background: var(--bg-base);
+    padding: 18px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .dp-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .dp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .dp-row .num {
+    font-family: var(--mono);
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .dp-row .num.positive { color: var(--status-dj); }
+  .dp-row .num.negative { color: var(--status-sakit); }
+  .dp-row .num.gold { color: var(--accent-gold-bright); }
+
+  .narrative-block {
+    background: var(--bg-base);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 18px 20px;
+    margin-bottom: 16px;
+  }
+  .nb-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 12px;
+  }
+  .nb-content {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+    font-family: var(--sans);
+  }
+  .nb-content.empty {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* FOOTER */
+  .footer {
+    margin-top: 80px;
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-text {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .footer-text em {
+    color: var(--accent-gold);
+    font-style: italic;
+    font-family: var(--serif);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 12px;
+  }
+
+  /* SCROLLBARS */
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--bg-base); }
+  ::-webkit-scrollbar-thumb { background: var(--bg-elev); border-radius: 5px; border: 2px solid var(--bg-base); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-gold-deep); }
+
+  /* RESPONSIVE */
+  /* SYNC STATUS INDICATOR */
+  .sync-block {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .sync-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    transition: background 0.3s, box-shadow 0.3s;
+  }
+  .sync-dot[data-state="live"] {
+    background: var(--status-dj);
+    box-shadow: 0 0 0 3px rgba(109, 181, 138, 0.18);
+    animation: livePulse 2.4s infinite;
+  }
+  [data-theme="light"] .sync-dot[data-state="live"] {
+    box-shadow: 0 0 0 3px rgba(61, 132, 96, 0.18);
+  }
+  .sync-dot[data-state="cached"] {
+    background: var(--status-lj);
+    box-shadow: 0 0 0 3px rgba(212, 162, 90, 0.18);
+  }
+  .sync-dot[data-state="offline"] {
+    background: var(--text-muted);
+  }
+  .sync-dot[data-state="connecting"],
+  .sync-dot[data-state="syncing"] {
+    background: var(--accent-gold-bright);
+    animation: syncPulse 1s infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(109, 181, 138, 0.18); }
+    50% { box-shadow: 0 0 0 6px rgba(109, 181, 138, 0); }
+  }
+  @keyframes syncPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+  .sync-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-grid;
+    place-items: center;
+    margin-left: 4px;
+    transition: all 0.2s ease;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .sync-btn:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold-bright);
+    background: var(--row-hover);
+  }
+  .sync-btn.spinning svg {
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* TOAST */
+  .toast-stack {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--bg-elev);
+    border: 1px solid var(--border-strong);
+    border-left: 3px solid var(--accent-gold);
+    color: var(--text-primary);
+    padding: 12px 18px;
+    border-radius: 4px;
+    font-size: 12.5px;
+    font-family: var(--sans);
+    max-width: 360px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    pointer-events: auto;
+    animation: toastIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  }
+  [data-theme="light"] .toast {
+    box-shadow: 0 8px 24px rgba(60, 50, 30, 0.12);
+  }
+  .toast.dismissed { animation: toastOut 0.3s ease forwards; }
+  .toast.success { border-left-color: var(--status-dj); }
+  .toast.warn { border-left-color: var(--status-lj); }
+  .toast.error { border-left-color: var(--status-sakit); }
+  .toast .toast-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .toast .toast-msg { line-height: 1.5; }
+  .toast .toast-msg em {
+    color: var(--accent-gold-bright);
+    font-style: normal;
+    font-weight: 500;
+    font-family: var(--mono);
+  }
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes toastOut {
+    to { opacity: 0; transform: translateX(20px); }
+  }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 3px;
+    gap: 0;
+    position: relative;
+  }
+  .theme-toggle button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 7px 11px;
+    border-radius: 100px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    transition: color 0.25s ease, background 0.25s ease;
+    position: relative;
+    z-index: 1;
+  }
+  .theme-toggle button:hover {
+    color: var(--text-secondary);
+  }
+  .theme-toggle button.active {
+    color: var(--accent-gold-bright);
+    background: var(--bg-base);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), inset 0 0 0 1px var(--border-strong);
+  }
+  [data-theme="light"] .theme-toggle button.active {
+    box-shadow: 0 1px 4px rgba(60, 50, 30, 0.10), inset 0 0 0 1px var(--border-strong);
+    color: var(--accent-gold-bright);
+    background: var(--bg-surface);
+  }
+  .theme-toggle .icon {
+    width: 12px; height: 12px;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  .theme-toggle .icon svg {
+    width: 100%; height: 100%;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .theme-toggle button .label-text {
+    display: inline;
+  }
+  @media (max-width: 700px) {
+    .theme-toggle button .label-text { display: none; }
+    .theme-toggle button { padding: 7px 8px; }
+  }
+
+
+    .grid-wide, .grid-three, .grid-two { grid-template-columns: 1fr; }
+    .kpi-band { grid-template-columns: repeat(3, 1fr); }
+    .info-grid { grid-template-columns: repeat(2, 1fr); }
+    .title-block { grid-template-columns: 1fr; }
+    .header-summary { text-align: left; border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: 24px; }
+    .dual-progress { grid-template-columns: 1fr; }
+    .filter-row { grid-template-columns: 1fr 1fr; }
+    .filter-row.secondary { grid-template-columns: 1fr 1fr 1fr; }
+    .filter-row.secondary .filter-clear,
+    .filter-row.secondary .filter-result { grid-column: span 3; }
+  }
+  @media (max-width: 700px) {
+    .kpi-band { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 0 16px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .status-grid { grid-template-columns: repeat(2, 1fr); }
+    .header-meta { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .meta-item { text-align: left; }
+    .filter-row, .filter-row.secondary { grid-template-columns: 1fr; }
+    .filter-row.secondary .filter-clear,
+    .filter-row.secondary .filter-result { grid-column: auto; }
+    .filter-result { justify-content: flex-start; }
+  }
+
+  /* Loader animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: reveal 0.6s ease forwards;
+  }
+  @keyframes reveal {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal:nth-child(1) { animation-delay: 0.05s; }
+  .reveal:nth-child(2) { animation-delay: 0.1s; }
+  .reveal:nth-child(3) { animation-delay: 0.15s; }
+  .reveal:nth-child(4) { animation-delay: 0.2s; }
+  .reveal:nth-child(5) { animation-delay: 0.25s; }
+  .reveal:nth-child(6) { animation-delay: 0.3s; }
+</style>
+<script>
+  // Theme bootstrap — runs before paint to avoid flash
+  (function () {
+    try {
+      var saved = localStorage.getItem('cpb-theme') || 'system';
+      var prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      var resolved = saved === 'system' ? (prefersLight ? 'light' : 'dark') : saved;
+      document.documentElement.setAttribute('data-theme', resolved);
+      document.documentElement.setAttribute('data-theme-pref', saved);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.documentElement.setAttribute('data-theme-pref', 'system');
+    }
+  })();
+</script>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-top">
+      <div class="brand-mark">
+        <div class="brand-emblem"><span>J</span></div>
+        <div class="brand-text">
+          <div class="org">Jabatan Kerja Raya · Sabah</div>
+          <div class="name">Cawangan Projek Bangunan</div>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="meta-item">
+          <div class="meta-label">Source</div>
+          <div class="meta-value">JKR Sabah CPB Masterlist</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Sync</div>
+          <div class="meta-value sync-block">
+            <span class="sync-dot" id="syncDot" data-state="connecting"></span>
+            <span id="syncLabel">connecting…</span>
+            <button type="button" class="sync-btn" id="syncBtn" title="Refresh now" aria-label="Refresh">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="meta-item" style="text-align: left;">
+          <div class="meta-label" style="margin-bottom: 6px;">Appearance</div>
+          <div class="theme-toggle" role="radiogroup" aria-label="Theme">
+            <button type="button" data-theme-choice="light" role="radio" aria-checked="false" title="Light mode">
+              <span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/></svg></span>
+              <span class="label-text">Light</span>
+            </button>
+            <button type="button" data-theme-choice="system" role="radio" aria-checked="false" title="Match system">
+              <span class="icon"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><line x1="8" y1="22" x2="16" y2="22"/><line x1="12" y1="18" x2="12" y2="22"/></svg></span>
+              <span class="label-text">System</span>
+            </button>
+            <button type="button" data-theme-choice="dark" role="radio" aria-checked="false" title="Dark mode">
+              <span class="icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
+              <span class="label-text">Dark</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="title-block">
+      <h1 class="main-title">
+        Cawangan Projek <em>Bangunan</em>
+        <span class="small">An interactive register of building projects executed across Sabah — funded by Federal &amp; State authorities, delivered through JKR Sabah.</span>
+      </h1>
+      <p class="header-summary">
+        Real-time portfolio overview of contract status, financial progress, scheduling variance, district distribution, and on-site issues for every active building project under CPB stewardship.
+      </p>
+    </div>
+  </header>
+
+  <!-- KPI BAND -->
+  <div class="kpi-band reveal">
+    <div class="kpi">
+      <div class="kpi-label">Total Projects</div>
+      <div class="kpi-value" id="kpiTotal">—</div>
+      <div class="kpi-sub">Active register</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Portfolio Value</div>
+      <div class="kpi-value kpi-accent"><span id="kpiValue">—</span><span class="unit">RM</span></div>
+      <div class="kpi-sub">Aggregate contract sum</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg Progress</div>
+      <div class="kpi-value"><span id="kpiAvgProg">—</span><span class="unit">%</span></div>
+      <div class="kpi-sub">Physical, weighted</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Ahead of Sched.</div>
+      <div class="kpi-value" id="kpiDJ" style="color: var(--status-dj);">—</div>
+      <div class="kpi-sub">Status: DJ</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Critical / Sick</div>
+      <div class="kpi-value" id="kpiSakit" style="color: var(--status-sakit);">—</div>
+      <div class="kpi-sub">Status: SAKIT</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Largest Single</div>
+      <div class="kpi-value kpi-accent"><span id="kpiMax">—</span><span class="unit">M</span></div>
+      <div class="kpi-sub" id="kpiMaxName">—</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 — PORTFOLIO HEALTH -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-num">§ 01 — PORTFOLIO HEALTH</div>
+        <h2 class="section-title">Status &amp; schedule velocity</h2>
+      </div>
+    </div>
+
+    <div class="grid-wide">
+      <div class="card reveal">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Schedule status — entire portfolio</div>
+            <div class="card-sub">DJ Depan Jadual · IJ Ikut Jadual · LJ Lewat Jadual · SAKIT</div>
+          </div>
+        </div>
+        <div class="status-grid">
+          <div class="status-tile dj" data-status="DJ">
+            <div class="status-code">DJ</div>
+            <div class="status-name">Depan Jadual · ahead</div>
+            <div class="status-count" id="statDJ">—</div>
+            <div class="status-pct" id="statDJpct">—</div>
+          </div>
+          <div class="status-tile ij" data-status="IJ">
+            <div class="status-code">IJ</div>
+            <div class="status-name">Ikut Jadual · on track</div>
+            <div class="status-count" id="statIJ">—</div>
+            <div class="status-pct" id="statIJpct">—</div>
+          </div>
+          <div class="status-tile lj" data-status="LJ">
+            <div class="status-code">LJ</div>
+            <div class="status-name">Lewat Jadual · behind</div>
+            <div class="status-count" id="statLJ">—</div>
+            <div class="status-pct" id="statLJpct">—</div>
+          </div>
+          <div class="status-tile sakit" data-status="SAKIT">
+            <div class="status-code">SAKIT</div>
+            <div class="status-name">Critical · distressed</div>
+            <div class="status-count" id="statSakit">—</div>
+            <div class="status-pct" id="statSakitPct">—</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="margin-top: 28px; height: 240px;">
+          <canvas id="varianceChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Funding source</div>
+            <div class="card-sub">Federal vs State allocation</div>
+          </div>
+        </div>
+        <div class="chart-wrap"><canvas id="fundingChart"></canvas></div>
+        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);">
+          <div style="font-family: var(--mono); font-size: 10px; letter-spacing: 0.18em; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px;">Top Ministries by Project Count</div>
+          <div id="ministryList"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2 — FINANCIAL VIEW -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-num">§ 02 — FINANCIAL VIEW</div>
+        <h2 class="section-title">Capital deployment</h2>
+      </div>
+    </div>
+
+    <div class="grid-two">
+      <div class="card reveal">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Top 10 contracts by value</div>
+            <div class="card-sub">Award sum · RM millions</div>
+          </div>
+        </div>
+        <div class="chart-wrap tall"><canvas id="topValueChart"></canvas></div>
+      </div>
+      <div class="card reveal">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Most active contractors</div>
+            <div class="card-sub">By portfolio value awarded</div>
+          </div>
+        </div>
+        <div class="chart-wrap tall"><canvas id="contractorChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3 — GEOGRAPHIC -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-num">§ 03 — GEOGRAPHIC FOOTPRINT</div>
+        <h2 class="section-title">Where the work happens</h2>
+      </div>
+    </div>
+
+    <div class="grid-two">
+      <div class="card reveal">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Project density by zone</div>
+            <div class="card-sub">JKR operational zones across Sabah</div>
+          </div>
+        </div>
+        <div class="chart-wrap tall"><canvas id="zoneChart"></canvas></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Districts</div>
+            <div class="card-sub">Click to filter the project register</div>
+          </div>
+        </div>
+        <div class="district-grid" id="districtGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4 — PROJECT REGISTER -->
+  <section class="section">
+    <div class="section-head">
+      <div>
+        <div class="section-num">§ 04 — PROJECT REGISTER</div>
+        <h2 class="section-title">The complete masterlist</h2>
+        <p class="section-desc">Search, filter, and click any row to open the full project dossier — including financial breakdown, schedule variance, on-site issues and follow-up actions.</p>
+      </div>
+    </div>
+
+    <div class="filter-bar reveal">
+      <div class="filter-row">
+        <div class="filter-field">
+          <label class="filter-label" for="searchBox">
+            Tajuk Projek <span class="ms-tag">project title</span>
+          </label>
+          <input type="text" class="filter-input with-icon" id="searchBox" placeholder="Type any part of a project name, contractor, or contract no…">
+        </div>
+        <div class="filter-field">
+          <label class="filter-label" for="filterDistrict">
+            Daerah <span class="ms-tag">district</span>
+          </label>
+          <select class="filter-input with-icon" id="filterDistrict">
+            <option value="">— All daerah —</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label" for="filterMinistry">
+            Kementerian <span class="ms-tag">ministry</span>
+          </label>
+          <select class="filter-input with-icon" id="filterMinistry">
+            <option value="">— All kementerian —</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="filter-row secondary">
+        <div class="filter-field">
+          <label class="filter-label" for="filterStatus">Schedule status</label>
+          <select class="filter-input" id="filterStatus">
+            <option value="">All statuses</option>
+            <option value="DJ">DJ — Ahead</option>
+            <option value="IJ">IJ — On track</option>
+            <option value="LJ">LJ — Behind</option>
+            <option value="SAKIT">SAKIT — Critical</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label" for="filterFunding">Funding source</label>
+          <select class="filter-input" id="filterFunding">
+            <option value="">All funding</option>
+            <option value="PERSEKUTUAN">Federal · Persekutuan</option>
+            <option value="NEGERI">State · Negeri</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label class="filter-label" for="filterZone">Operational zone</label>
+          <select class="filter-input" id="filterZone">
+            <option value="">All zones</option>
+          </select>
+        </div>
+        <button class="filter-clear" id="filterClear">Reset all</button>
+        <div class="filter-result"><strong id="filterCount">0</strong> of <span id="filterTotal">0</span> projects</div>
+      </div>
+
+      <div class="active-chips" id="activeChips"></div>
+    </div>
+
+    <div class="table-wrap reveal">
+      <table class="project-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Contractor</th>
+            <th>District</th>
+            <th>Funding</th>
+            <th style="text-align:right;">Contract</th>
+            <th>Physical Progress</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-text">
+      Cawangan Projek Bangunan · <em>JKR Sabah</em> · Live dashboard
+    </div>
+    <div class="footer-text">
+      Built · interactive · auto-filterable
+    </div>
+  </footer>
+
+</div>
+
+<!-- TOAST STACK -->
+<div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal" id="modalContent">
+    <!-- populated by JS -->
+  </div>
+</div>
+
+<script>
+// ================== DATA ==================
+let projects = [
+  { name: "PEMBINAAN BANGUNAN PRASEKOLAH SK LAHAD DATU III", code: "P63001012024503", contract: "HQ.103/2025(F)", value: 3500396, contractor: "PETRA PERDANA ENTERPRISE", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "LAHAD DATU", zone: "TAWAU", status: "IJ", physical: 0, scheduled: 0, financial: 0, finScheduled: 0, variance: 0, finVariance: 0, year: 2026, dj_lj: 0, sst: "15/12/2025", start: "19/01/2026", end: "20/07/2027", duration: 18, pic: "REBECCA", issues: "1. Tapak cadangan asal yang berhampiran cerun didapati berisiko tinggi berikutan pergerakan tanah di kawasan cerun.\n2. Cadangan alternatif mengalihkan lokasi pembinaan ke kawasan padang sekolah tetapi pihak PPD tidak bersetuju atas faktor aktiviti murid (Pendidikan Jasmani dan Kokurikulum).\n3. Kos anggaran bagi pembaikan cerun: RM5,100,000.00", followup: "", latest: "Kick-off meeting upcoming" },
+  { name: "NAIKTARAF LOJI KUMBAHAN PENJARA TAMAN MAT SALLEH", code: "", contract: "HQ.108/2025(F)", value: 1503350, contractor: "DY BINAMAJU SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KDN", agency: "Jabatan Penjara Malaysia", district: "KOTA KINABALU", zone: "KOTA KINABALU", status: "IJ", physical: 5.24, scheduled: 5.24, financial: 4.19, finScheduled: 0, variance: 0, finVariance: 4.19, year: 2026, dj_lj: 0, sst: "31/12/2025", start: "30/01/2026", end: "29/01/2027", duration: 12, pic: "ERIANT", issues: "", followup: "", latest: "Mesyuarat Pra-Pembinaan: 28/1/2026" },
+  { name: "PEJABAT LPP NEGERI SABAH (FASA 1) & IPP (FASA 2)", code: "", contract: "HQ.102/2025(S)", value: 6761020, contractor: "BETA MAJU SDN. BHD.", funding: "NEGERI", ministry: "Pertanian & Keterjaminan Makanan", agency: "Lembaga Pertubuhan Peladang", district: "KOTA KINABALU", zone: "KOTA KINABALU", status: "IJ", physical: 0, scheduled: 0, financial: 0, finScheduled: 0, variance: 0, finVariance: 0, year: 2026, dj_lj: 0, sst: "17/12/2025", start: "19/01/2026", end: "18/01/2028", duration: 24, pic: "UMMI", issues: "Permission to enter site not yet granted due to pending internal coordination between Client and KPM (Tuan Tanah).", followup: "SOR to be submitted for delay in site possession. Contractor proceeding with preliminary items.", latest: "Kick-off: 14/1/2026 · Technical Meeting No.1: 14/01/2026" },
+  { name: "DAIF SK BUNDUNG, TUARAN", code: "P63037002024239", contract: "HQ.104/2025(F)", value: 2178300, contractor: "KUMPULAN CL", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TUARAN", zone: "KOTA KINABALU", status: "IJ", physical: 0, scheduled: 0, financial: 0, finScheduled: 0, variance: 0, finVariance: 0, year: 2026, dj_lj: 0, sst: "15/12/2025", start: "15/01/2026", end: "16/07/2027", duration: 18, pic: "ATHIRAH", issues: "Tapak projek terletak di kawasan tanah perkuburan lama yang dipercayai mengandungi sisa rangka manusia. Siasatan lanjut serta pertimbangan terhadap sensitiviti budaya tempatan adalah diperlukan.", followup: "Delay in giving site possession telah dikeluarkan kepada pihak kontraktor melalui surat rujukan no. HQ.104/2025(F)/10 bertarikh 10/03/2026.", latest: "Kick-off: 14/1/2026" },
+  { name: "PEMBINAAN BANGUNAN TAMBAHAN 12 BILIK DARJAH SK KEMABONG, TENOM", code: "P63001020122019", contract: "HQ.100/2025(F)", value: 22312455, contractor: "PERKASA MAJURIA SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TENOM", zone: "KENINGAU", status: "DJ", physical: 12.64, scheduled: 8.50, financial: 14.90, finScheduled: 0, variance: 4.14, finVariance: 14.90, year: 2025, dj_lj: 5, sst: "24/11/2025", start: "29/12/2025", end: "01/03/2028", duration: 26, pic: "REBECCA", issues: "Isu berkaitan perbezaan paras tanah (cut & fill) dan implikasi terhadap sistem perparitan: aliran air menjadi perlahan, mengurangkan freeboard bangunan, dan boleh menyebabkan genangan air di kawasan tapak rendah.", followup: "", latest: "Kick-off Meeting: 22/12/2025 (Isnin)" },
+  { name: "PEMBINAAN 1 BILIK DARJAH PRASEKOLAH SK TUARID TAUD, KENINGAU", code: "P63001012023340", contract: "HQ.98/2025(F)", value: 1780830, contractor: "THN LANDSCAP SUPPLIES", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KENINGAU", zone: "KENINGAU", status: "DJ", physical: 12.30, scheduled: 7.70, financial: 6.11, finScheduled: 0, variance: 4.60, finVariance: 6.11, year: 2025, dj_lj: 6, sst: "24/11/2025", start: "29/12/2025", end: "30/12/2026", duration: 12, pic: "ATHIRAH", issues: "", followup: "", latest: "Kick-off Meeting: 22/12/2025" },
+  { name: "PEMBINAAN BANGUNAN PRASEKOLAH SK KAMPONG BIAH, KENINGAU", code: "P63001012024507", contract: "HQ.99/2025(F)", value: 1767568, contractor: "DY BINA MAJU SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KENINGAU", zone: "KENINGAU", status: "DJ", physical: 8.79, scheduled: 2.80, financial: 10.72, finScheduled: 0, variance: 5.99, finVariance: 10.72, year: 2025, dj_lj: 8, sst: "24/11/2025", start: "26/12/2025", end: "27/04/2027", duration: 16, pic: "REBECCA", issues: "", followup: "", latest: "Kick-off Meeting: 22/12/2025" },
+  { name: "PEMBINAAN PERPUSTAKAAN NEGERI SABAH CAWANGAN KOTA MARUDU", code: "", contract: "HQ.85/2025(S)", value: 6000000, contractor: "APARU CONSTRUCTION SDN. BHD.", funding: "NEGERI", ministry: "KPSTI", agency: "Jabatan Perpustakaan Negeri Sabah", district: "KOTA MARUDU", zone: "KUDAT", status: "IJ", physical: 7.74, scheduled: 13.30, financial: 10.67, finScheduled: 13.74, variance: -5.56, finVariance: -3.07, year: 2025, dj_lj: -10, sst: "29/09/2025", start: "29/10/2025", end: "28/10/2027", duration: 24, pic: "NATASSHA", issues: "BQ dan dokumen kontrak muktamad belum terima.", followup: "Permohonan dokumen telah dikemukakan kepada CUB pada 16/01/2026 dan 09/04/2026.", latest: "Kick-off: 10/10/2025" },
+  { name: "PEJABAT DAERAH KECIL KIULU, TUARAN", code: "", contract: "HQ.81/2025(S)", value: 6100000, contractor: "SYARIKAT PEMBINAAN RUZELLI SDN. BHD.", funding: "NEGERI", ministry: "KKRS", agency: "JKR Sabah", district: "TUARAN", zone: "KOTA KINABALU", status: "IJ", physical: 3.43, scheduled: 3.75, financial: 5.80, finScheduled: 6.41, variance: -0.32, finVariance: -0.61, year: 2025, dj_lj: -1, sst: "10/09/2025", start: "13/10/2025", end: "12/10/2027", duration: 24, pic: "NATASSHA", issues: "ATDA belum terima.", followup: "Permohonan telah dikemukakan kepada CUB pada 17/10/2025 dan 13/04/2026.", latest: "Technical Meeting No.2: 24/04/2026" },
+  { name: "DEWAN SERBAGUNA PEKAN BAHARU SUKAU", code: "", contract: "HQ.79/2025(S)", value: 2490000, contractor: "KONTRAKTOR EMAN ENTERPRISE", funding: "NEGERI", ministry: "KKRS", agency: "JKR Sabah", district: "KINABATANGAN", zone: "TAWAU", status: "IJ", physical: 2.16, scheduled: 11.00, financial: 5.41, finScheduled: 13.90, variance: -8.84, finVariance: -8.49, year: 2025, dj_lj: -18, sst: "11/09/2025", start: "13/10/2025", end: "12/04/2027", duration: 18, pic: "ANDREAS", issues: "Perubahan tapak bangunan belum disahkan.", followup: "Meeting bersama Majlis Daerah akan dilaksanakan (dipengerusikan oleh Majlis Daerah).", latest: "Issue: Perubahan tapak oleh Majlis Daerah belum disahkan" },
+  { name: "PEJABAT DAERAH KALABAKAN FASA 2, TAWAU", code: "", contract: "HQ.73/2025(S)", value: 8550000, contractor: "MASIJAYA SDN. BHD.", funding: "NEGERI", ministry: "KKRS", agency: "JKR Sabah", district: "TAWAU", zone: "TAWAU", status: "LJ", physical: 5.66, scheduled: 23.30, financial: 7.10, finScheduled: 27.96, variance: -17.64, finVariance: -20.86, year: 2025, dj_lj: -39, sst: "20/08/2025", start: "23/09/2025", end: "22/03/2027", duration: 18, pic: "NATASSHA", issues: "", followup: "", latest: "Behind schedule by 39 days" },
+  { name: "PPKI SMK TAMPARULI", code: "P63013002024417", contract: "HQ.63/2025(F)", value: 8729625, contractor: "SETMARK SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TUARAN", zone: "KOTA KINABALU", status: "DJ", physical: 54.09, scheduled: 30.84, financial: 49.48, finScheduled: 0, variance: 23.25, finVariance: 49.48, year: 2025, dj_lj: 63, sst: "04/07/2025", start: "04/08/2025", end: "05/08/2027", duration: 24, pic: "REBECCA", issues: "", followup: "", latest: "Strong DJ performance — 63 days ahead" },
+  { name: "PEMBANGUNAN SEMULA 49 UNIT KUARTERS KEMENTAH PAPAR", code: "P60009000028001", contract: "HQ.61/2025(F)", value: 20445855, contractor: "JARINGAN BORNEO RESOURCES SDN. BHD.", funding: "PERSEKUTUAN", ministry: "Pertahanan Malaysia", agency: "JKR Sabah", district: "PAPAR", zone: "KOTA KINABALU", status: "SAKIT", physical: 0.09, scheduled: 11.69, financial: 2.20, finScheduled: 12.59, variance: -11.60, finVariance: -10.39, year: 2025, dj_lj: -85, sst: "04/07/2025", start: "04/08/2025", end: "05/08/2027", duration: 24, pic: "ARNIE", issues: "", followup: "", latest: "EOT No.1 akan dikemukakan disebabkan oleh kelulusan lukisan PEPC bagi struktur dan SI sebanyak 179 hari sehingga 17/12/2027." },
+  { name: "MAHKAMAH ANAK NEGERI SOOK", code: "", contract: "HQ.50/2025(S)", value: 2217051, contractor: "NURAINI ELECTRICAL (M) SDN. BHD.", funding: "NEGERI", ministry: "KKTP", agency: "JHEANS", district: "KENINGAU", zone: "KENINGAU", status: "SAKIT", physical: 6.30, scheduled: 14.53, financial: 10.10, finScheduled: 17.17, variance: -8.23, finVariance: -7.07, year: 2025, dj_lj: -60, sst: "04/06/2025", start: "04/07/2025", end: "05/07/2027", duration: 24, pic: "UMMI", issues: "Interim 3–5: Masih menunggu peruntukan daripada pihak Klien. Interim 6 (Jan 2026) belum dikemukakan.", followup: "Backfilling, persediaan kerja anti anai-anai dan ground beam sedang dijalankan.", latest: "Status: SAKIT — 60 days behind" },
+  { name: "PEMBINAAN BAHARU SMK GUM GUM II, SANDAKAN", code: "P63002010129999", contract: "HQ.47/2025(F)", value: 61923000, contractor: "LE MAGNIFIQUE SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "SANDAKAN", zone: "SANDAKAN", status: "IJ", physical: 1.14, scheduled: 4.66, financial: 1.47, finScheduled: 0, variance: -3.52, finVariance: 1.47, year: 2025, dj_lj: -11, sst: "29/05/2025", start: "30/06/2025", end: "31/07/2028", duration: 37, pic: "ATHIRAH", issues: "", followup: "", latest: "Advance payment: RM10,000,000 paid" },
+  { name: "DAIF SK BUNDU TUHAN, RANAU", code: "P63037002023108", contract: "HQ. 53/2025(F)", value: 34479000, contractor: "SRI ESBINA (M) SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "RANAU", zone: "KOTA BELUD", status: "IJ", physical: 9.51, scheduled: 10.80, financial: 14.37, finScheduled: 3.71, variance: -1.29, finVariance: 10.66, year: 2025, dj_lj: -4, sst: "05/06/2025", start: "09/07/2025", end: "10/01/2028", duration: 30, pic: "REBECCA", issues: "", followup: "", latest: "Direct KPM project" },
+  { name: "DAIF SK KIMONDOU, RANAU", code: "P63037002023174", contract: "HQ.52/2025(F)", value: 25788880, contractor: "MARUDU ENGINEERING SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "RANAU", zone: "KOTA BELUD", status: "DJ", physical: 16.97, scheduled: 13.69, financial: 1.79, finScheduled: 1.29, variance: 3.28, finVariance: 0.50, year: 2025, dj_lj: 11, sst: "05/06/2025", start: "09/07/2025", end: "10/01/2028", duration: 30, pic: "SAFWAN", issues: "", followup: "", latest: "Kick-off: 08/07/2025" },
+  { name: "DAIF SK RAGKAM, TAMBUNAN", code: "P63037002023113", contract: "HQ.38/2025(F)", value: 21580280, contractor: "APARU CONSTRUCTION SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TAMBUNAN", zone: "KENINGAU", status: "DJ", physical: 25.96, scheduled: 25.32, financial: 21.63, finScheduled: 3.86, variance: 0.64, finVariance: 17.77, year: 2025, dj_lj: 2, sst: "16/05/2025", start: "16/06/2025", end: "17/12/2027", duration: 30, pic: "REBECCA", issues: "", followup: "", latest: "Direct KPM · Advance Payment: RM3,725,000" },
+  { name: "MENAIKTARAF DAPUR BANDUAN, PENJARA PUSAT KK", code: "P62640000011033", contract: "HQ.44/2025(F)", value: 1843986, contractor: "APUAN CORPORATION SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KDN", agency: "Jabatan Penjara Malaysia", district: "KOTA KINABALU", zone: "KOTA KINABALU", status: "SAKIT", physical: 1.85, scheduled: 77.76, financial: 5.17, finScheduled: 78.00, variance: -75.91, finVariance: -72.83, year: 2025, dj_lj: -242, sst: "16/05/2025", start: "16/06/2025", end: "17/06/2026", duration: 12, pic: "ERIANT", issues: "Multiple VOs required: observation tower / tandas mengganggu kerja, CCTV perlu dialihkan, kerja meroboh table top tidak dalam BQ, scupper drain tidak diperinci, tiang asal bukan komponen struktur (BATA).", followup: "Multiple technical meetings held (19/8/2025, 10/10/2025, VO Mtg 28/04/2026). Kontraktor diminta menyediakan dokumen untuk VO.", latest: "Mesyuarat VO No.1: 28/04/2026" },
+  { name: "MENAIKTARAF & MEMBINA BANGUNAN BAHARU PUSPEN PAPAR", code: "P62020009000004", contract: "HQ.33/2025(F)", value: 15370000, contractor: "PERTAMA BUMIMEGA SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KDN", agency: "AADK", district: "PAPAR", zone: "KOTA KINABALU", status: "IJ", physical: 4.15, scheduled: 6.43, financial: 5.64, finScheduled: 7.86, variance: -2.28, finVariance: -2.22, year: 2025, dj_lj: -17, sst: "14/05/2025", start: "13/06/2025", end: "14/06/2027", duration: 24, pic: "ARNIE", issues: "", followup: "EOT No.1 akan dikemukakan kerana kelewatan SESB pengalihan kabel.", latest: "EOT No.1 diluluskan sehingga 9/11/2027" },
+  { name: "PEMBINAAN BAHARU SMK BALABAN JAYA, BELURAN", code: "P63002010122005", contract: "HQ.29/2025(S)", value: 62139431, contractor: "JASA VY MEGAH SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "BELURAN", zone: "SANDAKAN", status: "DJ", physical: 19.80, scheduled: 17.00, financial: 21.61, finScheduled: 8.00, variance: 2.80, finVariance: 13.61, year: 2025, dj_lj: 9, sst: "24/04/2025", start: "28/05/2025", end: "29/11/2027", duration: 30, pic: "ATHIRAH", issues: "", followup: "", latest: "Permohonan advance payment kontraktor: RM10,000,000" },
+  { name: "MEMBINA SEMULA KUARTERS BARU JKR 7176, ISTANA SERI KINABALU", code: "", contract: "HQ.19/2025(S)", value: 7309500, contractor: "JASA MAJU SDN. BHD.", funding: "NEGERI", ministry: "KKRS", agency: "JKR Sabah", district: "KOTA KINABALU", zone: "KOTA KINABALU", status: "DJ", physical: 14.90, scheduled: 11.51, financial: 18.09, finScheduled: 15.07, variance: 3.39, finVariance: 3.02, year: 2025, dj_lj: 13, sst: "20/03/2025", start: "21/04/2025", end: "20/04/2027", duration: 24, pic: "ANDREAS", issues: "", followup: "", latest: "SOR adalah JKR KK · DJ +13 days" },
+  { name: "STOR EKSIBIT TAMAN HIDUPAN LIAR LOK KAWI", code: "", contract: "HQ.23/2025(S)", value: 1136000, contractor: "SABABENA CONSTRUCTION", funding: "NEGERI", ministry: "KEPKAS", agency: "Jabatan Hidupan Liar Sabah", district: "KOTA KINABALU", zone: "KOTA KINABALU", status: "SAKIT", physical: 30.49, scheduled: 89.83, financial: 32.25, finScheduled: 89.94, variance: -59.34, finVariance: -57.69, year: 2025, dj_lj: -223, sst: "19/03/2025", start: "21/04/2025", end: "20/04/2026", duration: 12, pic: "ANDREAS", issues: "", followup: "APS No.1 sudah diluluskan (Dec 25)", latest: "CNC: 21.4.26 (pending status from CUB)" },
+  { name: "PEMBINAAN GANTIAN PENUH BILIK DARJAH SK TAMBALANG, TUARAN", code: "P63001011211188", contract: "HQ.21/2025(F)", value: 2835680, contractor: "MEGAH UNGGUL TRADING", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Malaysia", district: "TUARAN", zone: "KOTA KINABALU", status: "LJ", physical: 14.34, scheduled: 25.83, financial: 2.93, finScheduled: 2.93, variance: -11.49, finVariance: 0.00, year: 2025, dj_lj: -34, sst: "11/03/2025", start: "28/04/2025", end: "29/10/2026", duration: 18, pic: "SAFWAN", issues: "High ground water table menyebabkan kelewatan pada kerja kerana perlu pam air keluar sebelum boleh meneruskan kerja.", followup: "Akan memohon EOT.", latest: "Behind 34 days · EOT planned" },
+  { name: "PEMBINAAN GANTIAN PENUH BILIK DARJAH SK PEKAN TAMPARULI, TUARAN", code: "P63001011211191", contract: "HQ.20/2025(F)", value: 3448000, contractor: "TANAH MAKMUR KONTRAKTOR", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Malaysia", district: "KOTA KINABALU", zone: "KOTA KINABALU", status: "DJ", physical: 35.82, scheduled: 31.82, financial: 46.48, finScheduled: 34.99, variance: 4.00, finVariance: 11.49, year: 2025, dj_lj: 15, sst: "11/03/2025", start: "28/04/2025", end: "29/10/2026", duration: 18, pic: "REBECCA", issues: "", followup: "", latest: "DJ +15 days · Strong financial progress" },
+  { name: "PPKI & 3 BENGKEL KEMAHIRAN SMK TAMAN TUN FUAD", code: "P63013000111041", contract: "HQ.15/2025(F)", value: 7711200, contractor: "PEMBORONG SUNGAI EMAS", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Malaysia", district: "KOTA KINABALU", zone: "KOTA KINABALU", status: "IJ", physical: 13.03, scheduled: 14.01, financial: 7.72, finScheduled: 1.74, variance: -0.98, finVariance: 5.98, year: 2025, dj_lj: -4, sst: "10/03/2025", start: "28/04/2025", end: "29/04/2027", duration: 24, pic: "REBECCA", issues: "Lukisan 'Development Plan' menunjukkan perbezaan pada saiz bangunan projek.", followup: "", latest: "Advance payment lulus: RM1,852,800" },
+  { name: "PEMBINAAN SEMULA TAMU DONGGONGON, PENAMPANG", code: "", contract: "HQ.16/2025(S)", value: 7050000, contractor: "NIKMAT MAJU", funding: "NEGERI", ministry: "Pertanian & Keterjaminan Makanan", agency: "Majlis Perbandaran Penampang", district: "PENAMPANG", zone: "KOTA KINABALU", status: "IJ", physical: 73.66, scheduled: 83.58, financial: 74.65, finScheduled: 72.23, variance: -9.92, finVariance: 2.42, year: 2025, dj_lj: -38, sst: "10/03/2025", start: "09/04/2025", end: "09/04/2026", duration: 12, pic: "UMMI", issues: "", followup: "", latest: "Near completion (74% physical)" },
+  { name: "i-LEAD INTAN KAMPUS SABAH (REKA & BINA)", code: "", contract: "HQ.9/2025(F)", value: 2698500, contractor: "FEMAC ENGINEERING SDN. BHD.", funding: "PERSEKUTUAN", ministry: "JPM", agency: "INTAN Sabah", district: "TUARAN", zone: "KOTA KINABALU", status: "SAKIT", physical: 22.83, scheduled: 68.66, financial: 26.04, finScheduled: 70.72, variance: -45.83, finVariance: -44.68, year: 2025, dj_lj: -226, sst: "14/02/2025", start: "21/04/2025", end: "21/04/2026", duration: 12, pic: "UMMI", issues: "Poor planning on contractor side.", followup: "Request SOR to do daily monitoring and update the group via WhatsApp.", latest: "SAKIT · Severely behind schedule" },
+  { name: "PEMBINAAN GANTIAN & TAMBAHAN KUARTERS GURU SK ULU ANSUAN, TELUPID", code: "P63008002024522", contract: "HQ.12/2025(F)", value: 5319367, contractor: "BORNEO KREATIF ENTERPRISE PLT", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TELUPID", zone: "SANDAKAN", status: "DJ", physical: 12.30, scheduled: 7.70, financial: 15.37, finScheduled: 12.89, variance: 4.60, finVariance: 2.48, year: 2025, dj_lj: 8, sst: "19/02/2025", start: "21/03/2025", end: "22/09/2026", duration: 18, pic: "SAFWAN", issues: "Keadaan tapak belum tersedia disebabkan terdapat bangunan sedia ada yang masih digunakan oleh pihak sekolah. Skop perobohan tiada dalam kontrak.", followup: "SOR telah mengeluarkan surat kepada SO untuk syor delay in site possession.", latest: "Tarikh siap semasa: 16/02/2027" },
+  { name: "DAIF SK NAPONG, RANAU (REKA & BINA)", code: "P63037002023112", contract: "HQ.123/2024(F)", value: 33775509, contractor: "KIMOLOHING JAYA SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "RANAU", zone: "KOTA BELUD", status: "IJ", physical: 39.77, scheduled: 41.63, financial: 27.08, finScheduled: 11.47, variance: -1.86, finVariance: 15.61, year: 2025, dj_lj: -7, sst: "07/02/2025", start: "09/04/2025", end: "08/04/2027", duration: 24, pic: "REBECCA", issues: "", followup: "", latest: "ATDA: RM34,400,000 · Direct KPM" },
+  { name: "PEMBINAAN BANGUNAN TAMBAHAN SK KOTA, KINABATANGAN", code: "P63001022024121", contract: "HQ.11/2025(F)", value: 4628186, contractor: "YASAMOYO RESOURCES SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KINABATANGAN", zone: "SANDAKAN", status: "IJ", physical: 45.88, scheduled: 46.66, financial: 34.03, finScheduled: 19.18, variance: -0.78, finVariance: 14.85, year: 2025, dj_lj: 9, sst: "19/02/2025", start: "21/03/2025", end: "22/09/2026", duration: 18, pic: "SAFWAN", issues: "", followup: "", latest: "On schedule with strong financial progress" },
+  { name: "KOMPLEKS IADA, KOTA BELUD", code: "", contract: "HQ.10/2025(F)", value: 29744943, contractor: "MARIWANGSA MAJU SDN. BHD.", funding: "PERSEKUTUAN", ministry: "Pertanian & Keterjaminan Makanan", agency: "Jabatan Pertanian Negeri Sabah", district: "KOTA BELUD", zone: "KOTA BELUD", status: "IJ", physical: 20.14, scheduled: 22.83, financial: 21.29, finScheduled: 23.61, variance: -2.69, finVariance: -2.32, year: 2025, dj_lj: -23, sst: "19/02/2025", start: "21/03/2025", end: "22/07/2027", duration: 28, pic: "UMMI", issues: "", followup: "", latest: "Pending ATDA" },
+  { name: "DAIF SK BATU TININGKANG, TENOM (REKA & BINA)", code: "P63037002023115", contract: "HQ.4/2025(F)", value: 42350000, contractor: "SRI ESBINA (M) SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TENOM", zone: "KENINGAU", status: "DJ", physical: 60.48, scheduled: 43.52, financial: 53.63, finScheduled: 11.28, variance: 16.96, finVariance: 42.35, year: 2025, dj_lj: 125, sst: "08/01/2025", start: "10/03/2025", end: "09/09/2027", duration: 30, pic: "ATHIRAH", issues: "", followup: "", latest: "Standout performer · DJ +125 days" },
+  { name: "JPPKK PEMBINAAN KAMSIS POLITEKNIK SANDAKAN (REKA & BINA)", code: "P64004000220014", contract: "HQ.136/2024(F)", value: 39951000, contractor: "SASARAN NALURI SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPT", agency: "JKR Sabah", district: "SANDAKAN", zone: "SANDAKAN", status: "IJ", physical: 13.06, scheduled: 13.06, financial: 16.98, finScheduled: 5.31, variance: 0.00, finVariance: 11.67, year: 2025, dj_lj: 0, sst: "08/01/2025", start: "10/03/2025", end: "09/09/2027", duration: 30, pic: "SAFWAN", issues: "", followup: "", latest: "Advance Payment: RM6,562,278 paid" },
+  { name: "DAIF SK TAMBATUAN, KOTA BELUD (REKA & BINA)", code: "P63037002023116", contract: "HQ.124/2024(F)", value: 42303704, contractor: "KIMOLOHING JAYA SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KOTA BELUD", zone: "KOTA BELUD", status: "DJ", physical: 34.67, scheduled: 34.52, financial: 25.84, finScheduled: 18.03, variance: 0.15, finVariance: 7.81, year: 2025, dj_lj: 1, sst: "08/01/2025", start: "10/03/2025", end: "09/09/2027", duration: 30, pic: "ATHIRAH", issues: "Terdapat 5 tiang dan 2 utiliti box milik Telekom Malaysia (TM) yang berada di kawasan cadangan pembinaan.", followup: "SOR telah mengeluarkan surat permohonan cadangan pemindahan utiliti TM.", latest: "Bengkel Teknikal Design Review No.2: 29/04/2025" },
+  { name: "DAIF SK TAMBULIAN, KOTA BELUD (REKA & BINA)", code: "P63037002023171", contract: "HQ.125/2024(F)", value: 34988225, contractor: "FLEET VENTURES SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KOTA BELUD", zone: "KOTA BELUD", status: "DJ", physical: 18.28, scheduled: 18.12, financial: 27.69, finScheduled: 9.41, variance: 0.16, finVariance: 18.28, year: 2025, dj_lj: 1, sst: "08/01/2025", start: "10/03/2025", end: "09/03/2027", duration: 24, pic: "REBECCA", issues: "", followup: "", latest: "Direct KPM · Advance Payment: RM8,737,056" },
+  { name: "PEMBINAAN BANGUNAN TAMBAHAN SMK BELURAN (REKA & BINA)", code: "P63037002023182", contract: "HQ.119/2024(F)", value: 31541702, contractor: "VAURAS CONSTRUCTION SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "BELURAN", zone: "SANDAKAN", status: "DJ", physical: 45.00, scheduled: 37.00, financial: 47.27, finScheduled: 20.45, variance: 8.00, finVariance: 26.82, year: 2025, dj_lj: 8, sst: "08/01/2025", start: "10/03/2025", end: "09/03/2027", duration: 24, pic: "ATHIRAH", issues: "", followup: "", latest: "Strong DJ +8 with leading financial progress" },
+  { name: "PEMBINAAN ASRAMA SMK SILABUKAN, LAHAD DATU (REKA & BINA)", code: "P63009002023181", contract: "HQ.147/2024(F)", value: 46790000, contractor: "TEAMCONS RESOURCES SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "LAHAD DATU", zone: "TAWAU", status: "IJ", physical: 27.86, scheduled: 27.53, financial: 29.15, finScheduled: 15.14, variance: 0.33, finVariance: 14.01, year: 2025, dj_lj: 1, sst: "08/01/2025", start: "10/03/2025", end: "09/09/2027", duration: 30, pic: "REBECCA", issues: "", followup: "", latest: "Advance Payment lulus · permohonan RM9,903,594" },
+  { name: "PEMBINAAN BANGUNAN TAMBAHAN IPG KAMPUS TAWAU (REKA & BINA)", code: "P63007002023385", contract: "HQ.134/2024(F)", value: 25465000, contractor: "POWERNET ENGINEERING SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TAWAU", zone: "TAWAU", status: "IJ", physical: 22.91, scheduled: 26.16, financial: 2.57, finScheduled: 2.06, variance: -3.25, finVariance: 0.51, year: 2025, dj_lj: -14, sst: "08/01/2025", start: "10/03/2025", end: "09/03/2027", duration: 24, pic: "ATHIRAH", issues: "", followup: "", latest: "Bengkel Teknikal Design Review: 19/03/2025" },
+  { name: "DAIF SK MEROTAI BESAR, TAWAU", code: "P63037002024521", contract: "HQ.146/2024(F)", value: 3275523, contractor: "DOUBLE T.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TAWAU", zone: "TAWAU", status: "DJ", physical: 63.17, scheduled: 67.38, financial: 43.43, finScheduled: 15.46, variance: -4.21, finVariance: 27.97, year: 2025, dj_lj: 11, sst: "30/12/2024", start: "31/01/2025", end: "01/02/2027", duration: 24, pic: "SAFWAN", issues: "Terdapat unsuitable material.", followup: "", latest: "63% physical · DJ +11 days" },
+  { name: "MAHKAMAH ANAK NEGERI NABAWAN", code: "", contract: "HQ.131/2024(F)", value: 4828522, contractor: "CIVILTARGET (SABAH) SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KKTP", agency: "JHEANS", district: "NABAWAN", zone: "KENINGAU", status: "DJ", physical: 2.52, scheduled: 2.32, financial: 5.42, finScheduled: 5.48, variance: 0.20, finVariance: -0.06, year: 2025, dj_lj: 1, sst: "13/12/2024", start: "13/01/2025", end: "14/01/2027", duration: 24, pic: "UMMI", issues: "Tiada kerja-kerja di tapak dilaksanakan bermula pada hujung Bulan Mei 2025. Work Programme akan dikemas kini selepas tarikh baharu penyambungan kerja dikeluarkan.", followup: "SOR telah menulis surat permohonan tarikh baharu pemilikan tapak kepada SO bertarikh 3 September 2025. Cadangan menyambung semula kerja-kerja di tapak iaitu pada 1 Oktober 2025.", latest: "Suspension of Work dikeluarkan oleh Pengarah JKR Sabah pada 24 Julai 2025" },
+  { name: "PROJEK MEMBINA GANTIAN PENUH SMK WAKUBA, TAWAU", code: "P63002010122006", contract: "HQ.133/2024(F)", value: 39341182, contractor: "ZIRBAD RESOURCES SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TAWAU", zone: "TAWAU", status: "IJ", physical: 6.02, scheduled: 15.99, financial: 5.44, finScheduled: 14.49, variance: -9.97, finVariance: -9.05, year: 2025, dj_lj: -160, sst: "13/12/2024", start: "13/01/2025", end: "14/01/2028", duration: 36, pic: "REBECCA", issues: "Permohonan mesyuarat teknikal oleh pihak SOR berikutan isu percanggahan aras antara pelan survey topo dan lukisan pembinaan.", followup: "Suspension of Work decision following project sick meeting (07 Ogos 2025).", latest: "Direct KPM · ATDA: RM49,993,000" },
+  { name: "PEMBINAAN GANTIAN PENUH SK KEBAGU, KOTA KINABALU", code: "P63001020122014", contract: "HQ.127/2024(F)", value: 28919120, contractor: "GAMMERLITE SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KOTA KINABALU", zone: "KOTA KINABALU", status: "IJ", physical: 9.29, scheduled: 21.13, financial: 8.54, finScheduled: 12.14, variance: -11.84, finVariance: -3.60, year: 2025, dj_lj: 0, sst: "11/12/2024", start: "13/01/2025", end: "14/07/2027", duration: 30, pic: "SAFWAN", issues: "Permohonan penukaran cerucuk jenis square pile ke spun pile (30/10/2025). Kontraktor tidak dapat sambung kerja kerana menunggu kelulusan meroboh daripada KPM.", followup: "", latest: "EOT No.1: 14/07/27 → 17/02/28 (522 days)" },
+  { name: "PEMBINAAN BANGUNAN TAMBAHAN SMK SIMPANGAN, BELURAN", code: "P63002010122001", contract: "HQ.122/2024(F)", value: 46738800, contractor: "USAHA SERIBU SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "BELURAN", zone: "SANDAKAN", status: "SAKIT", physical: 3.72, scheduled: 17.43, financial: 4.02, finScheduled: 7.27, variance: -13.71, finVariance: -3.25, year: 2025, dj_lj: -65, sst: "11/12/2024", start: "13/01/2025", end: "14/07/2027", duration: 30, pic: "ATHIRAH", issues: "Isu penukaran substruktur.", followup: "Mesyuarat teknikal dan kontrak No.1 akan diadakan pada 18/07/2025.", latest: "ATDA: RM55,100,000 · Status SAKIT" },
+  { name: "PEMBINAAN GANTIAN SMK PENGIRAN OMAR, SIPITANG", code: "P63002010122018", contract: "HQ.121/2024(F)", value: 76514089, contractor: "IMEJ WARISAN SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "SIPITANG", zone: "BEAUFORT", status: "IJ", physical: 14.00, scheduled: 14.00, financial: 9.16, finScheduled: 4.00, variance: 0.00, finVariance: 5.16, year: 2025, dj_lj: 0, sst: "11/12/2024", start: "13/01/2025", end: "14/07/2027", duration: 30, pic: "SAFWAN", issues: "Perubahan spesifikasi cerusuk mikro. Underground utilities identified to belong to SE and JANS.", followup: "EOT diluluskan 205 hari dengan tarikh siap baru 4/2/28. Mesyuarat teknikal Bil 2/2025 diadakan pada 3/10/2025.", latest: "Largest contract in portfolio · RM76.5M" },
+  { name: "PEMBINAAN GANTIAN PENUH SMK BONGKOL, PITAS", code: "P63002010122002", contract: "HQ.117/2024(F)", value: 51877518, contractor: "MARIWANGSA MAJU SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "PITAS", zone: "KUDAT", status: "DJ", physical: 39.05, scheduled: 39.00, financial: 27.78, finScheduled: 2.39, variance: 0.05, finVariance: 25.39, year: 2025, dj_lj: 0, sst: "11/12/2024", start: "13/01/2025", end: "14/07/2027", duration: 30, pic: "REBECCA", issues: "Isu pertindihan tanah dengan pihak SAFODA.", followup: "Pihak SOR telah menulis surat bertarikh 5/02/2025 kepada pihak Arkitek untuk memohon pengesahan sempadan kawasan tapak.", latest: "Direct KPM · ATDA: RM62,500,000 · Advance Payment lulus" },
+  { name: "PEMBINAAN RUMAH BURUH JURUUKUR DAERAH LAHAD DATU", code: "", contract: "HQ.113/2024(S)", value: 428300, contractor: "PEMBORONG JAYA V.H.", funding: "NEGERI", ministry: "JKM", agency: "Jabatan Tanah dan Ukur", district: "LAHAD DATU", zone: "TAWAU", status: "SAKIT", physical: 36.58, scheduled: 100.00, financial: 42.50, finScheduled: 100.00, variance: -63.42, finVariance: -57.50, year: 2024, dj_lj: -320, sst: "21/11/2024", start: "12/12/2024", end: "22/12/2025", duration: 12, pic: "ANDREAS", issues: "Belum terima sebarang laporan kemajuan daripada SOR.", followup: "Sudah menghantar surat peringatan penyerahan laporan kemajuan.", latest: "CCP Meeting on 27.2.26 — kontraktor to complete project by end of June" },
+  { name: "PEMBINAAN BANGUNAN TAMBAHAN KUARTERS SMK ENTABUAN, TENOM", code: "P63008002023388", contract: "HQ.106/2024(F)", value: 6537000, contractor: "LE MAGNIFIQUE SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TENOM", zone: "KENINGAU", status: "DJ", physical: 76.00, scheduled: 76.00, financial: 43.72, finScheduled: 53.48, variance: 0.00, finVariance: -9.76, year: 2024, dj_lj: 6, sst: "04/11/2024", start: "06/12/2024", end: "07/08/2026", duration: 20, pic: "REBECCA", issues: "", followup: "", latest: "76% physical · ATDA: 15,600,000" },
+  { name: "DAIF SK APIN-APIN, KENINGAU", code: "P63037002023167", contract: "HQ.105/2024(F)", value: 25979210, contractor: "SYARIKAT TAWAKAL PROGRESIF SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KENINGAU", zone: "KENINGAU", status: "DJ", physical: 40.51, scheduled: 37.76, financial: 33.00, finScheduled: 5.30, variance: 2.75, finVariance: 27.69, year: 2024, dj_lj: 11, sst: "04/11/2024", start: "06/12/2024", end: "07/12/2026", duration: 24, pic: "SAFWAN", issues: "Discrepancies in land boundaries between licensed surveyor setting out and proposed land layout. Request for relocation of SESB utility poles and telephone poles.", followup: "Joint inspection with SESB on 07/02/2025. SESB issued stop work (16/01/26). SOR request for technical meeting.", latest: "Advance Payment paid: RM4,777,052" },
+  { name: "DAIF SK BALUNG, TAWAU", code: "P63037002023103", contract: "HQ.104/2024(F)", value: 20728822, contractor: "KAYAMAS WAJA SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "TAWAU", zone: "TAWAU", status: "DJ", physical: 48.00, scheduled: 47.00, financial: 34.08, finScheduled: 16.69, variance: 1.00, finVariance: 17.39, year: 2024, dj_lj: 5, sst: "04/11/2024", start: "06/12/2024", end: "07/12/2026", duration: 24, pic: "DEZOURA", issues: "SESB electric poles located at the construction area. Contractor written request for SESB to relocate poles (Jan 2025).", followup: "Pemeriksaan tapak utiliti SESB bersama SESB diadakan pada 11/02/2025.", latest: "Demolition work in progress" },
+  { name: "DAIF SK KEBAYAU, KOTA BELUD", code: "P63037002023117", contract: "HQ.103/2024(F)", value: 19267000, contractor: "HASRAT MAHIR SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KOTA BELUD", zone: "KOTA BELUD", status: "SAKIT", physical: 14.28, scheduled: 29.72, financial: 12.26, finScheduled: 8.50, variance: -15.44, finVariance: 3.76, year: 2024, dj_lj: -94, sst: "04/11/2024", start: "06/12/2024", end: "07/12/2026", duration: 24, pic: "SAFWAN", issues: "Permohonan pemindahan tiang Telekom Malaysia.", followup: "Mesyuarat teknikal & kontrak Bil.1/2025 pada 19/06/2025 — Pengaktifan WPS.", latest: "Status SAKIT · Behind 94 days" },
+  { name: "DAIF SK TAMU DARAT, KOTA BELUD", code: "P63037002023102", contract: "HQ.101/2024(F)", value: 23669182, contractor: "TUAH BERSATU JAYA SDN. BHD.", funding: "PERSEKUTUAN", ministry: "KPM", agency: "JKR Sabah", district: "KOTA BELUD", zone: "KOTA BELUD", status: "SAKIT", physical: 23.71, scheduled: 46.67, financial: 24.88, finScheduled: 43.95, variance: -22.96, finVariance: -19.07, year: 2024, dj_lj: -137, sst: "04/11/2024", start: "06/12/2024", end: "07/12/2026", duration: 24, pic: "DEZOURA", issues: "SOR telah menerima permohonan penambahan bangunan sementara daripada pihak Sekolah/PPD (Jan 2025).", followup: "ATDA Rev 1: RM30,000,000.00 (21/11/2025). Permohonan EOT No.1 perlu retable.", latest: "Status SAKIT · Behind 137 days" }
+];
+
+// ================== STATE ==================
+const fmt = (n) => new Intl.NumberFormat('en-MY').format(n);
+const fmtM = (n) => (n / 1_000_000).toFixed(1);
+
+let totals = {
+  count: 0, totalValue: 0, avgPhysical: 0,
+  byStatus: { DJ: 0, IJ: 0, LJ: 0, SAKIT: 0 },
+  byFunding: { PERSEKUTUAN: 0, NEGERI: 0 },
+  byMinistry: {}, byZone: {}, byDistrict: {}, byContractor: {}
+};
+let largest = null;
+let topByValue = [];
+let contractorSorted = [];
+let zoneSorted = [];
+let districtSorted = [];
+let ministrySorted = [];
+
+function recalcAll() {
+  totals = {
+    count: projects.length,
+    totalValue: projects.reduce((s, p) => s + p.value, 0),
+    avgPhysical: projects.length ? projects.reduce((s, p) => s + p.physical, 0) / projects.length : 0,
+    byStatus: { DJ: 0, IJ: 0, LJ: 0, SAKIT: 0 },
+    byFunding: { PERSEKUTUAN: 0, NEGERI: 0 },
+    byMinistry: {}, byZone: {}, byDistrict: {}, byContractor: {}
+  };
+  projects.forEach(p => {
+    totals.byStatus[p.status] = (totals.byStatus[p.status] || 0) + 1;
+    totals.byFunding[p.funding] = (totals.byFunding[p.funding] || 0) + p.value;
+    totals.byMinistry[p.ministry] = (totals.byMinistry[p.ministry] || 0) + 1;
+    totals.byZone[p.zone] = (totals.byZone[p.zone] || 0) + 1;
+    if (!totals.byDistrict[p.district]) totals.byDistrict[p.district] = { count: 0, value: 0 };
+    totals.byDistrict[p.district].count++;
+    totals.byDistrict[p.district].value += p.value;
+    if (!totals.byContractor[p.contractor]) totals.byContractor[p.contractor] = { count: 0, value: 0 };
+    totals.byContractor[p.contractor].count++;
+    totals.byContractor[p.contractor].value += p.value;
+  });
+  largest = projects.length ? projects.reduce((m, p) => p.value > m.value ? p : m, projects[0]) : { value: 0, name: '—' };
+  topByValue = [...projects].sort((a, b) => b.value - a.value).slice(0, 10).reverse();
+  contractorSorted = Object.entries(totals.byContractor).sort((a, b) => b[1].value - a[1].value).slice(0, 8).reverse();
+  zoneSorted = Object.entries(totals.byZone).sort((a, b) => b[1] - a[1]);
+  districtSorted = Object.entries(totals.byDistrict).sort((a, b) => b[1].count - a[1].count);
+  ministrySorted = Object.entries(totals.byMinistry).sort((a, b) => b[1] - a[1]).slice(0, 6);
+}
+
+// ================== RENDER FUNCTIONS ==================
+function renderKPIs() {
+  document.getElementById('kpiTotal').textContent = totals.count;
+  const valueUnit = document.querySelector('.kpi:nth-child(2) .unit');
+  if (totals.totalValue >= 1_000_000_000) {
+    document.getElementById('kpiValue').textContent = (totals.totalValue / 1_000_000_000).toFixed(2);
+    if (valueUnit) valueUnit.textContent = ' B RM';
+  } else {
+    document.getElementById('kpiValue').textContent = fmtM(totals.totalValue);
+    if (valueUnit) valueUnit.textContent = ' M RM';
+  }
+  document.getElementById('kpiAvgProg').textContent = totals.avgPhysical.toFixed(1);
+  document.getElementById('kpiDJ').textContent = totals.byStatus.DJ;
+  document.getElementById('kpiSakit').textContent = totals.byStatus.SAKIT;
+  document.getElementById('kpiMax').textContent = fmtM(largest.value);
+  document.getElementById('kpiMaxName').textContent = (largest.name || '').length > 36 ? largest.name.substring(0, 33) + '…' : (largest.name || '—');
+}
+
+function renderStatusTiles() {
+  const t = totals.count || 1;
+  ['DJ', 'IJ', 'LJ', 'SAKIT'].forEach(s => {
+    const numId = 'stat' + (s === 'SAKIT' ? 'Sakit' : s);
+    const pctId = numId + (s === 'SAKIT' ? 'Pct' : 'pct');
+    const numEl = document.getElementById(numId);
+    const pctEl = document.getElementById(pctId);
+    if (numEl) numEl.textContent = totals.byStatus[s];
+    if (pctEl) pctEl.textContent = ((totals.byStatus[s] / t) * 100).toFixed(0) + '% of portfolio';
+  });
+}
+
+function renderMinistryList() {
+  document.getElementById('ministryList').innerHTML = ministrySorted.map(([m, c]) => {
+    const pct = totals.count ? (c / totals.count * 100).toFixed(0) : 0;
+    return `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom: 1px solid var(--border);">
+      <span style="font-size:12px; color: var(--text-secondary);">${m}</span>
+      <span style="font-family: var(--mono); font-size: 11px; color: var(--accent-gold-bright);">${c} <span style="color: var(--text-muted);">· ${pct}%</span></span>
+    </div>`;
+  }).join('');
+}
+
+function renderDistrictGrid() {
+  document.getElementById('districtGrid').innerHTML = districtSorted.map(([name, info]) => `
+    <div class="district-cell" data-district="${name}">
+      <div class="district-name">${name}</div>
+      <div class="district-count">${info.count}</div>
+      <div class="district-value">RM ${fmtM(info.value)} M</div>
+    </div>
+  `).join('');
+  document.querySelectorAll('.district-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      const sel = document.getElementById('filterDistrict');
+      if (sel) sel.value = cell.dataset.district;
+      const sb = document.getElementById('searchBox');
+      if (sb) sb.value = '';
+      applyFilters();
+      document.querySelector('.table-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+}
+
+function renderFilterOptions() {
+  const zones = [...new Set(projects.map(p => p.zone))].filter(Boolean).sort();
+  const ministries = [...new Set(projects.map(p => p.ministry))].filter(Boolean).sort();
+  const districts = [...new Set(projects.map(p => p.district))].filter(Boolean).sort();
+  const setOpts = (id, list, all) => {
+    const sel = document.getElementById(id);
+    const current = sel.value;
+    sel.innerHTML = `<option value="">${all}</option>` + list.map(v => `<option value="${v}">${v}</option>`).join('');
+    if (list.includes(current)) sel.value = current;
+  };
+  setOpts('filterZone', zones, 'All zones');
+  setOpts('filterMinistry', ministries, '— All kementerian —');
+  setOpts('filterDistrict', districts, '— All daerah —');
+  document.getElementById('filterTotal').textContent = projects.length;
+}
+
+// ================== CHARTS ==================
+const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const charts = []; // store all chart instances for re-theming and re-rendering
+
+function applyChartDefaults() {
+  Chart.defaults.color = cssVar('--chart-text');
+  Chart.defaults.font.family = 'Inter, sans-serif';
+  Chart.defaults.font.size = 11;
+  Chart.defaults.borderColor = cssVar('--chart-grid');
+}
+
+function statusColor(status) {
+  return {
+    DJ: cssVar('--status-dj'),
+    IJ: cssVar('--status-ij'),
+    LJ: cssVar('--status-lj'),
+    SAKIT: cssVar('--status-sakit')
+  }[status];
+}
+
+function createCharts() {
+  applyChartDefaults();
+
+  // Variance scatter
+  charts.push(new Chart(document.getElementById('varianceChart'), {
+    type: 'scatter',
+    data: {
+      datasets: [
+        { _statusKey: 'DJ',    label: 'DJ Ahead',    data: projects.filter(p => p.status === 'DJ').map(p => ({ x: p.scheduled, y: p.physical, name: p.name })), backgroundColor: statusColor('DJ'),    borderColor: statusColor('DJ'),    pointRadius: 5, pointHoverRadius: 8 },
+        { _statusKey: 'IJ',    label: 'IJ On track', data: projects.filter(p => p.status === 'IJ').map(p => ({ x: p.scheduled, y: p.physical, name: p.name })), backgroundColor: statusColor('IJ'),    borderColor: statusColor('IJ'),    pointRadius: 5, pointHoverRadius: 8 },
+        { _statusKey: 'LJ',    label: 'LJ Behind',   data: projects.filter(p => p.status === 'LJ').map(p => ({ x: p.scheduled, y: p.physical, name: p.name })), backgroundColor: statusColor('LJ'),    borderColor: statusColor('LJ'),    pointRadius: 5, pointHoverRadius: 8 },
+        { _statusKey: 'SAKIT', label: 'SAKIT',       data: projects.filter(p => p.status === 'SAKIT').map(p => ({ x: p.scheduled, y: p.physical, name: p.name })), backgroundColor: statusColor('SAKIT'), borderColor: statusColor('SAKIT'), pointRadius: 5, pointHoverRadius: 8 },
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 14, font: { size: 10 } } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.raw.name}: actual ${ctx.raw.y.toFixed(1)}% vs scheduled ${ctx.raw.x.toFixed(1)}%` } }
+      },
+      scales: {
+        x: { title: { display: true, text: 'Scheduled physical %', color: cssVar('--text-muted'), font: { size: 10 } }, max: 100, grid: { color: cssVar('--chart-grid') } },
+        y: { title: { display: true, text: 'Actual physical %', color: cssVar('--text-muted'), font: { size: 10 } }, max: 100, grid: { color: cssVar('--chart-grid') } }
+      }
+    }
+  }));
+
+  // Funding doughnut
+  charts.push(new Chart(document.getElementById('fundingChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Federal · Persekutuan', 'State · Negeri'],
+      datasets: [{
+        _palette: 'funding',
+        data: [totals.byFunding.PERSEKUTUAN, totals.byFunding.NEGERI],
+        backgroundColor: [cssVar('--status-ij'), cssVar('--accent-gold-deep')],
+        borderColor: cssVar('--bg-surface'),
+        borderWidth: 4
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '68%',
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 14, font: { size: 11 } } },
+        tooltip: { callbacks: { label: (ctx) => `${ctx.label}: RM ${fmt(Math.round(ctx.raw))} (${totals.totalValue ? ((ctx.raw / totals.totalValue) * 100).toFixed(1) : 0}%)` } }
+      }
+    }
+  }));
+
+  // Top contracts
+  charts.push(new Chart(document.getElementById('topValueChart'), {
+    type: 'bar',
+    data: {
+      labels: topByValue.map(p => p.name.length > 38 ? p.name.substring(0, 35) + '…' : p.name),
+      datasets: [{
+        _palette: 'topValue',
+        label: 'Contract value (RM M)',
+        data: topByValue.map(p => p.value / 1_000_000),
+        backgroundColor: topByValue.map(p => statusColor(p.status)),
+        borderRadius: 2, barThickness: 16
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `RM ${fmt(Math.round(topByValue[ctx.dataIndex].value))} · ${topByValue[ctx.dataIndex].contractor}`,
+            title: (items) => topByValue[items[0].dataIndex].name
+          }
+        }
+      },
+      scales: {
+        x: { title: { display: true, text: 'RM millions', color: cssVar('--text-muted'), font: { size: 10 } }, grid: { color: cssVar('--chart-grid') } },
+        y: { ticks: { font: { size: 10 } }, grid: { display: false } }
+      }
+    }
+  }));
+
+  // Top contractors
+  charts.push(new Chart(document.getElementById('contractorChart'), {
+    type: 'bar',
+    data: {
+      labels: contractorSorted.map(([n]) => n.length > 30 ? n.substring(0, 28) + '…' : n),
+      datasets: [{
+        _palette: 'gold',
+        label: 'Total awarded (RM M)',
+        data: contractorSorted.map(([_, v]) => v.value / 1_000_000),
+        backgroundColor: cssVar('--chart-bar-gold'),
+        borderColor: cssVar('--accent-gold'),
+        borderWidth: 1, borderRadius: 2, barThickness: 18
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (ctx) => `RM ${fmt(Math.round(contractorSorted[ctx.dataIndex][1].value))} · ${contractorSorted[ctx.dataIndex][1].count} project(s)` } }
+      },
+      scales: {
+        x: { title: { display: true, text: 'RM millions', color: cssVar('--text-muted'), font: { size: 10 } }, grid: { color: cssVar('--chart-grid') } },
+        y: { ticks: { font: { size: 10 } }, grid: { display: false } }
+      }
+    }
+  }));
+
+  // Zones
+  charts.push(new Chart(document.getElementById('zoneChart'), {
+    type: 'bar',
+    data: {
+      labels: zoneSorted.map(([n]) => n),
+      datasets: [{
+        _palette: 'soft',
+        label: 'Projects',
+        data: zoneSorted.map(([_, c]) => c),
+        backgroundColor: cssVar('--chart-bar-soft'),
+        borderColor: cssVar('--status-ij'),
+        borderWidth: 1, borderRadius: 2, barThickness: 24
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { font: { size: 10 } }, grid: { display: false } },
+        y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 10 } }, grid: { color: cssVar('--chart-grid') } }
+      }
+    }
+  }));
+}
+
+function updateChartsData() {
+  if (!charts.length) return;
+  const [variance, funding, top, contractor, zone] = charts;
+
+  // 0: Variance scatter
+  variance.data.datasets.forEach(ds => {
+    ds.data = projects.filter(p => p.status === ds._statusKey).map(p => ({ x: p.scheduled, y: p.physical, name: p.name }));
+  });
+
+  // 1: Funding doughnut
+  funding.data.datasets[0].data = [totals.byFunding.PERSEKUTUAN, totals.byFunding.NEGERI];
+
+  // 2: Top contracts
+  top.data.labels = topByValue.map(p => p.name.length > 38 ? p.name.substring(0, 35) + '…' : p.name);
+  top.data.datasets[0].data = topByValue.map(p => p.value / 1_000_000);
+  top.data.datasets[0].backgroundColor = topByValue.map(p => statusColor(p.status));
+
+  // 3: Top contractors
+  contractor.data.labels = contractorSorted.map(([n]) => n.length > 30 ? n.substring(0, 28) + '…' : n);
+  contractor.data.datasets[0].data = contractorSorted.map(([_, v]) => v.value / 1_000_000);
+
+  // 4: Zones
+  zone.data.labels = zoneSorted.map(([n]) => n);
+  zone.data.datasets[0].data = zoneSorted.map(([_, c]) => c);
+
+  charts.forEach(ch => ch.update('none'));
+}
+
+// Re-theme all charts when theme changes
+function rethemeCharts() {
+  applyChartDefaults();
+  const grid = cssVar('--chart-grid');
+  const muted = cssVar('--text-muted');
+  charts.forEach(ch => {
+    if (ch.options.scales) {
+      Object.values(ch.options.scales).forEach(scale => {
+        if (scale.grid && scale.grid.color !== undefined) scale.grid.color = grid;
+        if (scale.title) scale.title.color = muted;
+      });
+    }
+    ch.data.datasets.forEach(ds => {
+      if (ds._statusKey) {
+        const c = statusColor(ds._statusKey);
+        ds.backgroundColor = c;
+        ds.borderColor = c;
+      } else if (ds._palette === 'funding') {
+        ds.backgroundColor = [cssVar('--status-ij'), cssVar('--accent-gold-deep')];
+        ds.borderColor = cssVar('--bg-surface');
+      } else if (ds._palette === 'topValue') {
+        ds.backgroundColor = topByValue.map(p => statusColor(p.status));
+      } else if (ds._palette === 'gold') {
+        ds.backgroundColor = cssVar('--chart-bar-gold');
+        ds.borderColor = cssVar('--accent-gold');
+      } else if (ds._palette === 'soft') {
+        ds.backgroundColor = cssVar('--chart-bar-soft');
+        ds.borderColor = cssVar('--status-ij');
+      }
+    });
+    ch.update('none');
+  });
+}
+
+// Status-tile click handler (delegated, registered once)
+document.querySelectorAll('.status-tile').forEach(tile => {
+  tile.addEventListener('click', () => {
+    document.getElementById('filterStatus').value = tile.dataset.status;
+    applyFilters();
+    document.querySelector('.table-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// ================== REBUILD ALL ==================
+function rebuildAll() {
+  recalcAll();
+  renderKPIs();
+  renderStatusTiles();
+  renderMinistryList();
+  renderDistrictGrid();
+  renderFilterOptions();
+  if (charts.length === 0) {
+    createCharts();
+  } else {
+    updateChartsData();
+  }
+  if (typeof applyFilters === 'function') applyFilters();
+}
+
+// Initial calc + chart creation (runs synchronously on load)
+recalcAll();
+renderKPIs();
+renderStatusTiles();
+renderMinistryList();
+renderDistrictGrid();
+createCharts();
+
+function buildRow(p, idx) {
+  const statusClass = p.status.toLowerCase();
+  const statusLabel = { DJ: 'DJ Ahead', IJ: 'IJ On Track', LJ: 'LJ Behind', SAKIT: 'SAKIT' }[p.status];
+  const fundingTag = p.funding === 'PERSEKUTUAN' ? 'fed' : 'state';
+  const fundingLabel = p.funding === 'PERSEKUTUAN' ? 'Federal' : 'State';
+  return `
+    <tr data-idx="${idx}">
+      <td class="project-title-cell">
+        ${p.name}
+        <span class="small">${p.contract}${p.code ? ' · ' + p.code : ''}</span>
+      </td>
+      <td>${p.contractor}</td>
+      <td>${p.district}<br><span style="font-size:10px;color:var(--text-muted);font-family:var(--mono);">${p.zone}</span></td>
+      <td><span class="funding-tag ${fundingTag}">${fundingLabel}</span></td>
+      <td class="value-cell">${fmt(p.value)}</td>
+      <td>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(p.physical, 100)}%"></div></div>
+          <span class="progress-num">${p.physical.toFixed(1)}%</span>
+        </div>
+      </td>
+      <td><span class="pill pill-${statusClass}">${statusLabel}</span></td>
+    </tr>
+  `;
+}
+
+function renderTable(list) {
+  const body = document.getElementById('tableBody');
+  body.innerHTML = list.map((p) => buildRow(p, projects.indexOf(p))).join('');
+  document.getElementById('filterCount').textContent = list.length;
+  document.querySelectorAll('#tableBody tr').forEach(tr => {
+    tr.addEventListener('click', () => openModal(parseInt(tr.dataset.idx)));
+  });
+}
+
+function applyFilters() {
+  const q = document.getElementById('searchBox').value.toLowerCase().trim();
+  const fStatus = document.getElementById('filterStatus').value;
+  const fFunding = document.getElementById('filterFunding').value;
+  const fZone = document.getElementById('filterZone').value;
+  const fMinistry = document.getElementById('filterMinistry').value;
+  const fDistrict = document.getElementById('filterDistrict').value;
+
+  const filtered = projects.filter(p => {
+    // Project title search — also matches contractor and contract no for convenience
+    if (q && !(
+      p.name.toLowerCase().includes(q) ||
+      p.contractor.toLowerCase().includes(q) ||
+      p.contract.toLowerCase().includes(q) ||
+      (p.code && p.code.toLowerCase().includes(q))
+    )) return false;
+    if (fDistrict && p.district !== fDistrict) return false;
+    if (fMinistry && p.ministry !== fMinistry) return false;
+    if (fStatus && p.status !== fStatus) return false;
+    if (fFunding && p.funding !== fFunding) return false;
+    if (fZone && p.zone !== fZone) return false;
+    return true;
+  });
+  renderTable(filtered);
+  renderActiveChips({ q, fStatus, fFunding, fZone, fMinistry, fDistrict });
+}
+
+function renderActiveChips(state) {
+  const chips = [];
+  const labels = {
+    DJ: 'Ahead', IJ: 'On track', LJ: 'Behind', SAKIT: 'Critical',
+    PERSEKUTUAN: 'Federal', NEGERI: 'State'
+  };
+  if (state.q)         chips.push({ key: 'Tajuk', val: state.q, target: 'searchBox' });
+  if (state.fDistrict) chips.push({ key: 'Daerah', val: state.fDistrict, target: 'filterDistrict' });
+  if (state.fMinistry) chips.push({ key: 'Kementerian', val: state.fMinistry, target: 'filterMinistry' });
+  if (state.fStatus)   chips.push({ key: 'Status', val: labels[state.fStatus] || state.fStatus, target: 'filterStatus' });
+  if (state.fFunding)  chips.push({ key: 'Funding', val: labels[state.fFunding] || state.fFunding, target: 'filterFunding' });
+  if (state.fZone)     chips.push({ key: 'Zone', val: state.fZone, target: 'filterZone' });
+
+  const wrap = document.getElementById('activeChips');
+  wrap.innerHTML = chips.map(c =>
+    `<span class="chip"><span class="chip-key">${c.key}</span> ${c.val} <span class="chip-x" data-target="${c.target}">×</span></span>`
+  ).join('');
+
+  wrap.querySelectorAll('.chip-x').forEach(x => {
+    x.addEventListener('click', () => {
+      document.getElementById(x.dataset.target).value = '';
+      applyFilters();
+    });
+  });
+}
+
+['searchBox','filterStatus','filterFunding','filterZone','filterMinistry','filterDistrict'].forEach(id => {
+  document.getElementById(id).addEventListener('input', applyFilters);
+});
+document.getElementById('filterClear').addEventListener('click', () => {
+  document.getElementById('searchBox').value = '';
+  ['filterStatus','filterFunding','filterZone','filterMinistry','filterDistrict'].forEach(id => document.getElementById(id).value = '');
+  applyFilters();
+});
+renderFilterOptions();
+renderTable(projects);
+
+// ================== MODAL ==================
+function openModal(idx) {
+  const p = projects[idx];
+  const statusClass = p.status.toLowerCase();
+  const statusLabel = { DJ: 'Depan Jadual · ahead of schedule', IJ: 'Ikut Jadual · on track', LJ: 'Lewat Jadual · behind schedule', SAKIT: 'Critical · distressed' }[p.status];
+  const variance = p.variance >= 0 ? `+${p.variance.toFixed(2)}%` : `${p.variance.toFixed(2)}%`;
+  const finVar = p.finVariance >= 0 ? `+${p.finVariance.toFixed(2)}%` : `${p.finVariance.toFixed(2)}%`;
+  const dayClass = p.dj_lj > 0 ? 'positive' : (p.dj_lj < 0 ? 'negative' : '');
+
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-header">
+      <button class="modal-close" id="modalClose">×</button>
+      <div class="modal-tag">${p.contract} · ${p.code || 'No code'}</div>
+      <div class="modal-title">${p.name}</div>
+      <div class="modal-meta">
+        <div class="modal-meta-item"><span class="pill pill-${statusClass}">${statusLabel}</span></div>
+        <div class="modal-meta-item">Contract: <strong>RM ${fmt(p.value)}</strong></div>
+        <div class="modal-meta-item">Duration: <strong>${p.duration} months</strong></div>
+        <div class="modal-meta-item">PIC: <strong>${p.pic}</strong></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="info-grid">
+        <div class="info-cell"><div class="info-label">Contractor</div><div class="info-value">${p.contractor}</div></div>
+        <div class="info-cell"><div class="info-label">Funding</div><div class="info-value">${p.funding}</div></div>
+        <div class="info-cell"><div class="info-label">Ministry</div><div class="info-value">${p.ministry}</div></div>
+        <div class="info-cell"><div class="info-label">Agency</div><div class="info-value">${p.agency}</div></div>
+        <div class="info-cell"><div class="info-label">District</div><div class="info-value">${p.district}</div></div>
+        <div class="info-cell"><div class="info-label">Zone</div><div class="info-value">${p.zone}</div></div>
+        <div class="info-cell"><div class="info-label">SST Date</div><div class="info-value">${p.sst}</div></div>
+        <div class="info-cell"><div class="info-label">Original End</div><div class="info-value">${p.end}</div></div>
+      </div>
+
+      <div class="progress-block">
+        <div class="progress-block-title">Physical &amp; financial progress</div>
+        <div class="dual-progress">
+          <div class="dual-progress-item">
+            <div class="dp-label">Physical</div>
+            <div class="dp-row"><span>Scheduled</span><span class="num">${p.scheduled.toFixed(2)}%</span></div>
+            <div class="dp-row"><span>Actual</span><span class="num gold">${p.physical.toFixed(2)}%</span></div>
+            <div class="dp-row"><span>Variance</span><span class="num ${p.variance >= 0 ? 'positive' : 'negative'}">${variance}</span></div>
+            <div style="margin-top: 14px;">
+              <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(p.physical, 100)}%"></div></div>
+            </div>
+          </div>
+          <div class="dual-progress-item">
+            <div class="dp-label">Financial</div>
+            <div class="dp-row"><span>Scheduled</span><span class="num">${p.finScheduled.toFixed(2)}%</span></div>
+            <div class="dp-row"><span>Actual</span><span class="num gold">${p.financial.toFixed(2)}%</span></div>
+            <div class="dp-row"><span>Variance</span><span class="num ${p.finVariance >= 0 ? 'positive' : 'negative'}">${finVar}</span></div>
+            <div style="margin-top: 14px;">
+              <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(p.financial, 100)}%; background: linear-gradient(90deg, #5b9bd5, #8ab8e0);"></div></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 14px 18px; background: var(--bg-base); border: 1px solid var(--border); border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-family: var(--mono); font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;">Schedule slippage</span>
+          <span style="font-family: var(--serif); font-style: italic; font-size: 22px; color: ${p.dj_lj > 0 ? 'var(--status-dj)' : (p.dj_lj < 0 ? 'var(--status-sakit)' : 'var(--text-secondary)')};">
+            ${p.dj_lj > 0 ? '+' : ''}${p.dj_lj} <span style="font-size: 12px; color: var(--text-muted); font-style: normal; font-family: var(--mono);">days</span>
+          </span>
+        </div>
+      </div>
+
+      ${p.issues ? `<div class="narrative-block">
+        <div class="nb-title">⚠ Site issues</div>
+        <div class="nb-content">${p.issues}</div>
+      </div>` : ''}
+
+      ${p.followup ? `<div class="narrative-block">
+        <div class="nb-title">→ Follow-up actions</div>
+        <div class="nb-content">${p.followup}</div>
+      </div>` : ''}
+
+      ${p.latest ? `<div class="narrative-block">
+        <div class="nb-title">⊙ Latest status</div>
+        <div class="nb-content">${p.latest}</div>
+      </div>` : ''}
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modal').addEventListener('click', (e) => {
+  if (e.target.id === 'modal') closeModal();
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+// ================== LIVE SYNC FROM GOOGLE SHEETS ==================
+// Source: JKR SABAH CPB MASTERLIST
+// Endpoint: gviz CSV export. Requires the sheet to have "Anyone with the link → Viewer" sharing.
+const SHEET_ID = '1vLV70BllBQV01YCkywJPFrm00LADe6fHk2qxeP-mplc';
+const LIVE_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv`;
+const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 minutes
+
+let lastSyncedAt = null;
+let isLive = false;
+let refreshTimer = null;
+
+// ----- Toast helper -----
+function toast({ title = 'Update', msg = '', kind = '', ttl = 4500 } = {}) {
+  const stack = document.getElementById('toastStack');
+  if (!stack) return;
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.innerHTML = `<div class="toast-title">${title}</div><div class="toast-msg">${msg}</div>`;
+  stack.appendChild(el);
+  setTimeout(() => {
+    el.classList.add('dismissed');
+    setTimeout(() => el.remove(), 300);
+  }, ttl);
+}
+
+// ----- Sync status indicator -----
+function setSyncStatus(state, label) {
+  const dot = document.getElementById('syncDot');
+  const lbl = document.getElementById('syncLabel');
+  if (dot) dot.setAttribute('data-state', state);
+  if (lbl) lbl.textContent = label;
+}
+
+function relativeTime(date) {
+  if (!date) return '—';
+  const s = Math.round((Date.now() - date.getTime()) / 1000);
+  if (s < 5) return 'just now';
+  if (s < 60) return s + 's ago';
+  const m = Math.round(s / 60);
+  if (m < 60) return m + 'm ago';
+  const h = Math.round(m / 60);
+  if (h < 24) return h + 'h ago';
+  return date.toLocaleDateString('en-MY', { day: '2-digit', month: 'short' });
+}
+
+function tickSyncLabel() {
+  if (!lastSyncedAt) return;
+  if (isLive) {
+    setSyncStatus('live', 'live · synced ' + relativeTime(lastSyncedAt));
+  } else {
+    setSyncStatus('cached', 'cached · ' + relativeTime(lastSyncedAt));
+  }
+}
+setInterval(tickSyncLabel, 30 * 1000);
+
+// ----- CSV parser (RFC 4180-ish, handles quoted fields with newlines + escaped quotes) -----
+function parseCSV(text) {
+  const rows = [];
+  let row = [];
+  let field = '';
+  let inQuotes = false;
+  let i = 0;
+  while (i < text.length) {
+    const c = text[i];
+    if (inQuotes) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      field += c; i++;
+    } else {
+      if (c === '"') { inQuotes = true; i++; continue; }
+      if (c === ',') { row.push(field); field = ''; i++; continue; }
+      if (c === '\r' || c === '\n') {
+        if (c === '\r' && text[i + 1] === '\n') i++;
+        row.push(field); rows.push(row);
+        row = []; field = ''; i++; continue;
+      }
+      field += c; i++;
+    }
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
+// ----- Column mapping (by header name fragment, case-insensitive) -----
+function mapRowsToProjects(rows) {
+  if (!rows || rows.length < 2) return [];
+  const header = rows[0].map(h => (h || '').replace(/\s+/g, ' ').trim());
+  const idx = (...needles) => {
+    for (const n of needles) {
+      const i = header.findIndex(h => h.toLowerCase().includes(n.toLowerCase()));
+      if (i >= 0) return i;
+    }
+    return -1;
+  };
+  const COL = {
+    name:         idx('TAJUK PROJEK', 'TAJUK'),
+    code:         idx('KOD PROJEK', 'KOD'),
+    contract:     idx('NO. KONTRAK', 'NO KONTRAK'),
+    value:        idx('HARGA KONTRAK'),
+    sst:          idx('TARIKH SST'),
+    start:        idx('TARIKH MULA'),
+    end:          idx('TARIKH SIAP ASAL', 'TARIKH SIAP'),
+    duration:     idx('TEMPOH SIAP'),
+    contractor:   idx('KONTRAKTOR'),
+    funding:      idx('NEGERI/PERSEKUTUAN', 'PERSEKUTUAN'),
+    ministry:     idx('KEMENTERIAN'),
+    agency:       idx('JABATAN/AGENSI', 'AGENSI', 'JABATAN'),
+    district:     idx('DAERAH'),
+    zone:         idx('ZON'),
+    physical:     idx('KEMAJUAN FIZIKAL SEBENAR'),
+    scheduled:    idx('KEMAJUAN FIZIKAL JADUAL'),
+    financial:    idx('KEMAJUAN KEWANGAN SEBENAR'),
+    finScheduled: idx('KEMAJUAN KEWANGAN JADUAL'),
+    variance:     idx('VARIAN KEMAJUAN FIZIKAL'),
+    finVariance:  idx('VARIAN KEMAJUAN KEWANGAN'),
+    status:       idx('STATUS (DJ', 'STATUS DJ'),
+    djlj:         idx('DJ/LJ'),
+    pic:          idx('PIC'),
+    year:         idx('TAHUN'),
+    issues:       idx('ISU'),
+    followup:     idx('TINDAKAN SUSULAN'),
+    latest:       idx('STATUS TERKINI')
+  };
+
+  const get = (row, k) => COL[k] >= 0 && row[COL[k]] !== undefined ? row[COL[k]] : '';
+  const parseMoney = (s) => {
+    if (!s) return 0;
+    const cleaned = String(s).replace(/RM/gi, '').replace(/[, ]/g, '').replace(/[^\d.\-]/g, '');
+    return parseFloat(cleaned) || 0;
+  };
+  const parsePct = (s) => {
+    if (!s) return 0;
+    const m = String(s).match(/-?\d+(\.\d+)?/);
+    return m ? parseFloat(m[0]) : 0;
+  };
+  const parseInt0 = (s) => {
+    if (!s) return 0;
+    const m = String(s).match(/-?\d+/);
+    return m ? parseInt(m[0], 10) : 0;
+  };
+  const simplifyMinistry = (s) => {
+    s = (s || '').trim();
+    const m = s.match(/\(([^)]+)\)/);
+    return m ? m[1].trim() : (s.toUpperCase() || 'Unspecified');
+  };
+  const normalizeStatus = (s) => {
+    s = (s || '').trim().toUpperCase();
+    return ['DJ','IJ','LJ','SAKIT'].includes(s) ? s : 'IJ';
+  };
+  const normalizeFunding = (s) => {
+    s = (s || '').trim().toUpperCase();
+    if (s.includes('NEGERI')) return 'NEGERI';
+    if (s.includes('PERSEKUTUAN')) return 'PERSEKUTUAN';
+    return 'PERSEKUTUAN';
+  };
+
+  return rows.slice(1).map(r => {
+    const name = (get(r, 'name') || '').trim();
+    if (!name) return null;
+    return {
+      name,
+      code: (get(r, 'code') || '').trim(),
+      contract: (get(r, 'contract') || '').trim() || '—',
+      value: parseMoney(get(r, 'value')),
+      contractor: (get(r, 'contractor') || '').trim() || '—',
+      funding: normalizeFunding(get(r, 'funding')),
+      ministry: simplifyMinistry(get(r, 'ministry')),
+      agency: (get(r, 'agency') || '').trim() || '—',
+      district: (get(r, 'district') || '').trim().toUpperCase() || '—',
+      zone: (get(r, 'zone') || '').trim().toUpperCase() || '—',
+      status: normalizeStatus(get(r, 'status')),
+      physical: parsePct(get(r, 'physical')),
+      scheduled: parsePct(get(r, 'scheduled')),
+      financial: parsePct(get(r, 'financial')),
+      finScheduled: parsePct(get(r, 'finScheduled')),
+      variance: parsePct(get(r, 'variance')),
+      finVariance: parsePct(get(r, 'finVariance')),
+      year: parseInt0(get(r, 'year')) || new Date().getFullYear(),
+      dj_lj: parseInt0(get(r, 'djlj')),
+      sst: (get(r, 'sst') || '').trim(),
+      start: (get(r, 'start') || '').trim(),
+      end: (get(r, 'end') || '').trim(),
+      duration: parseInt0(get(r, 'duration')),
+      pic: (get(r, 'pic') || '').trim() || '—',
+      issues: (get(r, 'issues') || '').trim(),
+      followup: (get(r, 'followup') || '').trim(),
+      latest: (get(r, 'latest') || '').trim()
+    };
+  }).filter(Boolean);
+}
+
+// ----- Detect what changed between two project lists -----
+function diffProjects(oldList, newList) {
+  const oldByContract = new Map(oldList.map(p => [p.contract + '|' + p.name, p]));
+  const newByContract = new Map(newList.map(p => [p.contract + '|' + p.name, p]));
+  const added = [...newByContract.keys()].filter(k => !oldByContract.has(k)).length;
+  const removed = [...oldByContract.keys()].filter(k => !newByContract.has(k)).length;
+  let updated = 0;
+  newByContract.forEach((p, k) => {
+    const o = oldByContract.get(k);
+    if (o && (o.physical !== p.physical || o.financial !== p.financial || o.status !== p.status || o.value !== p.value)) {
+      updated++;
+    }
+  });
+  return { added, removed, updated };
+}
+
+// ----- Fetch + apply -----
+async function syncFromSource(opts = {}) {
+  const isManual = !!opts.manual;
+  const btn = document.getElementById('syncBtn');
+  if (btn) btn.classList.add('spinning');
+  setSyncStatus('syncing', isManual ? 'refreshing…' : 'syncing…');
+
+  try {
+    const url = LIVE_URL + (LIVE_URL.includes('?') ? '&' : '?') + '_=' + Date.now();
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const text = await res.text();
+
+    // Detect if Google returned an HTML error page rather than CSV
+    const trimmed = text.trim();
+    if (trimmed.startsWith('<') || trimmed.toLowerCase().startsWith('<!doctype')) {
+      throw new Error('not-shared');
+    }
+
+    const rows = parseCSV(text);
+    const fresh = mapRowsToProjects(rows);
+    if (fresh.length === 0) throw new Error('empty');
+
+    const diff = diffProjects(projects, fresh);
+    projects = fresh;
+    isLive = true;
+    lastSyncedAt = new Date();
+    rebuildAll();
+
+    if (isManual || diff.added || diff.removed || diff.updated) {
+      const parts = [];
+      if (diff.added) parts.push(`<em>${diff.added}</em> added`);
+      if (diff.removed) parts.push(`<em>${diff.removed}</em> removed`);
+      if (diff.updated) parts.push(`<em>${diff.updated}</em> updated`);
+      const msg = parts.length
+        ? `Synced from source · ${parts.join(' · ')}.`
+        : `<em>${fresh.length}</em> projects synced from source · no changes.`;
+      toast({ title: 'Live sync', msg, kind: 'success' });
+    }
+    tickSyncLabel();
+  } catch (err) {
+    console.warn('Live sync failed:', err);
+    if (lastSyncedAt) {
+      tickSyncLabel(); // remain on cached state
+    } else {
+      isLive = false;
+      setSyncStatus('offline', 'offline · using embedded baseline');
+    }
+    if (isManual) {
+      const detail = err.message === 'not-shared'
+        ? 'The Google Sheet must be shared as “Anyone with the link → Viewer”. Check sharing settings on the source sheet.'
+        : err.message === 'empty'
+        ? 'The sheet returned no project rows. Verify the column headers match the masterlist format.'
+        : 'Could not reach the source. Showing the last known data.';
+      toast({ title: 'Sync failed', msg: detail, kind: 'error', ttl: 7000 });
+    }
+  } finally {
+    setTimeout(() => {
+      const btn = document.getElementById('syncBtn');
+      if (btn) btn.classList.remove('spinning');
+    }, 400);
+  }
+}
+
+// Manual refresh button
+document.getElementById('syncBtn').addEventListener('click', () => syncFromSource({ manual: true }));
+
+// Auto-refresh on schedule
+function scheduleAutoRefresh() {
+  if (refreshTimer) clearInterval(refreshTimer);
+  refreshTimer = setInterval(() => syncFromSource(), REFRESH_INTERVAL_MS);
+}
+scheduleAutoRefresh();
+
+// Refresh when tab regains focus after being away
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && lastSyncedAt) {
+    const ageMs = Date.now() - lastSyncedAt.getTime();
+    if (ageMs > 60 * 1000) syncFromSource(); // only if older than 1 minute
+  }
+});
+
+// Initial sync on page load — runs after the embedded baseline is already on screen
+window.addEventListener('load', () => {
+  setTimeout(() => syncFromSource(), 600);
+});
+
+// Show baseline state until first sync completes
+setSyncStatus('connecting', 'connecting to source…');
+
+// ================== THEME MANAGER ==================
+(function () {
+  const root = document.documentElement;
+  const mql = window.matchMedia('(prefers-color-scheme: light)');
+
+  function getPref() {
+    try { return localStorage.getItem('cpb-theme') || 'system'; }
+    catch (e) { return 'system'; }
+  }
+
+  function setPref(pref) {
+    try { localStorage.setItem('cpb-theme', pref); } catch (e) { /* ignore */ }
+  }
+
+  function resolved(pref) {
+    if (pref === 'light' || pref === 'dark') return pref;
+    return mql.matches ? 'light' : 'dark';
+  }
+
+  function applyTheme(pref) {
+    const r = resolved(pref);
+    root.setAttribute('data-theme', r);
+    root.setAttribute('data-theme-pref', pref);
+    updateButtons(pref);
+    // Wait one frame so the new CSS variables are computed before re-reading them
+    requestAnimationFrame(() => {
+      if (typeof rethemeCharts === 'function') rethemeCharts();
+    });
+  }
+
+  function updateButtons(pref) {
+    document.querySelectorAll('.theme-toggle button').forEach(b => {
+      const active = b.dataset.themeChoice === pref;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-checked', active ? 'true' : 'false');
+    });
+  }
+
+  // Wire up clicks
+  document.querySelectorAll('.theme-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pref = btn.dataset.themeChoice;
+      setPref(pref);
+      applyTheme(pref);
+    });
+  });
+
+  // React to OS preference changes when in system mode
+  const onSystemChange = () => {
+    if (getPref() === 'system') applyTheme('system');
+  };
+  if (mql.addEventListener) mql.addEventListener('change', onSystemChange);
+  else if (mql.addListener) mql.addListener(onSystemChange); // legacy Safari
+
+  // Apply on load (sync button states with bootstrap-applied theme)
+  applyTheme(getPref());
+})();
+</script>
+</body>
+</html>
